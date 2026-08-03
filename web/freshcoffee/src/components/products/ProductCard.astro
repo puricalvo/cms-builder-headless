@@ -1,0 +1,79 @@
+---
+import { Picture } from "astro:assets";
+import PriceWithVariants from "./PriceWithVariants.astro";
+import AddProductButton from "./AddProductButton";
+import { formatCurrency } from "@/utils";
+
+interface Props {
+    product: any;
+}
+
+const { product } = Astro.props;
+
+let isVariable = false;
+let variants: any[] = [];
+
+try {
+
+    variants = JSON.parse(product.price);
+
+    isVariable = Array.isArray(variants);
+
+} catch {
+
+    isVariable = false;
+
+}
+---
+
+<div class="border border-gray-200">
+
+    <Picture
+        src={product.image}
+        alt={`Imagen de ${product.title}`}
+        width={600}
+        height={600}
+        formats={["avif","webp"]}
+    />
+
+    <div class="p-5">
+
+        <h3 class="text-2xl font-black h-20">
+            {product.title}
+        </h3>
+
+        {
+            isVariable ? (
+
+                <PriceWithVariants
+                    product={{
+                        ...product,
+                        variants
+                    }}
+                />
+
+            ) : (
+
+                <>
+                    <p class="mt-5 font-black text-amber-400 text-4xl">
+                        {formatCurrency(Number(product.price))}
+                    </p>
+
+                    <AddProductButton
+                        client:only="react"
+                        product={{
+                            id: product.id,
+                            table: product.table,
+                            name: product.title,
+                            price: Number(product.price)
+                        }}
+                    />
+                </>
+
+            )
+        }
+
+    </div>
+
+</div>
+

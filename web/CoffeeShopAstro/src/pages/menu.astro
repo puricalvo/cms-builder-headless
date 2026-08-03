@@ -1,0 +1,37 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import ProductsMenu from "@/components/menu/ProductsMenu.astro";
+
+import { getPage, getTable } from "@/services/pages";
+import { decode } from "@/services/utils";
+
+const page = await getPage("menu");
+const content = await getTable("menus");
+
+const menu = content[0];
+---
+
+<Layout
+    title={decode(page?.title_page ?? "Menú")}
+    subtitle={decode(menu?.subtitle_menu ?? "")}
+    bgImage={decode(menu?.image_menu ?? "")}
+>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+        <img
+            src={decode(menu?.image_menu ?? "")}
+            alt={`Imagen de ${decode(page?.title_page ?? "Menú")}`}
+            loading="lazy"
+        />
+
+        <div
+            class="text-xl space-y-3 mt-10 lg:mt-0"
+            set:html={decode(menu?.description_menu ?? "")}
+        ></div>
+
+    </div>
+
+     <ProductsMenu slot="after-main-content" /> 
+
+</Layout>

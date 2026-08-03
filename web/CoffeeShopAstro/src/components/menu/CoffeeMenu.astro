@@ -1,0 +1,43 @@
+---
+import MenuItem from "./MenuItem.astro";
+
+import { getTable } from "@/services/pages";
+import { decode } from "@/services/utils";
+
+const cafes = await getTable("cafes");
+---
+
+<div>
+
+    <h4 class="text-white font-black text-4xl uppercase text-center my-10">
+        Café
+    </h4>
+
+    <ul id="coffee-menu" class="space-y-3">
+
+        {
+            cafes.map((item: any) => (
+
+                <MenuItem
+                    title={decode(item.title_cafe)}
+                    description={decode(item.description_cafe)}
+                    price={Number(decode(item.price_cafe))}
+                    image={decode(item.image_cafe)}
+                />
+
+            ))
+        }
+
+    </ul>
+
+</div>
+
+<script>
+    import { initLightbox } from "@/scripts/initLightbox";
+
+    initLightbox("#coffee-menu");
+
+    document.addEventListener("astro:page-load", () => {
+        initLightbox("#coffee-menu");
+    });
+</script>

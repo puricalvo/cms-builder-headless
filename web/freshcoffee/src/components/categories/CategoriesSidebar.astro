@@ -1,0 +1,25 @@
+---
+import Logo from "@/assets/logo.svg";
+import CategoryCard from "@/components/categories/CategoryCard.astro";
+
+import { getCategories } from "@/services/pages";
+
+const sidebarCategories = await getCategories();
+
+
+
+---
+
+<aside class="md:w-80 md:h-screen border-r border-gray-200">
+
+    <div class="flex justify-center p-5">
+        <Logo />
+    </div>
+
+    {
+        sidebarCategories.map((category: any) => (
+            <CategoryCard category={category} />
+        ))
+    }
+
+</aside>

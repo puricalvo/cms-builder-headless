@@ -1,0 +1,30 @@
+---
+import BlogPosts from "@/components/blog/BlogPosts.astro";
+import PostModal from "@/components/blog/PostModal.astro";
+import Layout from "@/layouts/Layout.astro";
+import { getPage, getTable } from "@/services/pages";
+import { decode } from "@/services/utils";
+
+const page = await getPage("blog");
+const content = await getTable("blogs");
+
+const blog = content[0];
+---
+
+<Layout
+    title={decode(page?.title_page ?? "")}
+    subtitle={decode(blog?.subtitle_blog ?? "")}
+    bgImage={decode(blog?.image_blog ?? "")}
+>
+
+    <div
+        class="text-xl space-y-3 mt-10 lg:mt-0"
+        set:html={decode(blog?.description_blog ?? "")}
+    ></div>
+
+     <BlogPosts /> 
+     <PostModal />
+
+     
+
+</Layout>

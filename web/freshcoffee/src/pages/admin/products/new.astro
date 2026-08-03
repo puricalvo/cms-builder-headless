@@ -1,0 +1,140 @@
+---
+import ProductForm from "@/components/admin/products/ProductForm.astro";
+import AdminLayout from "@/layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Nuevo Producto">
+    <form class="mx-auto max-w-4xl">
+        <ProductForm />
+
+        <div class="mt-6 flex items-center justify-end gap-x-6">
+            <button
+                type="submit"
+                class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+                Crear Producto
+            </button>
+        </div>
+    </form>
+</AdminLayout>
+
+<script>
+    import { isInputError } from "astro:actions";
+    import { actions } from "astro:actions";
+    import { navigate } from "astro:transitions/client";
+    import { toast } from "react-toastify";
+
+    const form = document.querySelector("form");
+
+    if (form) {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const form = e.target as HTMLFormElement;
+
+            const variablePriceInput =
+                document.querySelector("#variable_price") as HTMLInputElement;
+
+            const isVariablePrice = variablePriceInput.checked;
+
+            const formData = new FormData(form);
+
+            formData.append(
+                "variable_price",
+                isVariablePrice ? "true" : "false"
+            );
+
+            /*
+             * Si el producto tiene precio variable,
+             * convertimos dinámicamente:
+             *
+             * variants[0][size]
+             * variants[0][price]
+             * variants[1][size]
+             * variants[1][price]
+             * ...
+             *
+             * en un único campo:
+             *
+             * variants = JSON
+             */
+            if (isVariablePrice) {
+
+                const variants: {
+                    size: string;
+                    price: number;
+                }[] = [];
+
+                for (const [key, value] of formData.entries()) {
+
+                    const match = key.match(
+                        /^variants\[(\d+)\]\[(size|price)\]$/
+                    );
+
+                    if (!match) continue;
+
+                    const index = Number(match[1]);
+                    const field = match[2];
+
+                    if (!variants[index]) {
+                        variants[index] = {
+                            size: "",
+                            price: 0
+                        };
+                    }
+
+                    if (field === "size") {
+                        variants[index].size = String(value);
+                    }
+
+                    if (field === "price") {
+                        variants[index].price = Number(value);
+                    }
+                }
+
+                const cleanVariants = variants.filter(Boolean);
+
+                /*
+                 * Eliminamos los campos individuales
+                 * porque el schema espera un único "variants".
+                 */
+                for (const key of Array.from(formData.keys())) {
+                    if (/^variants\[\d+\]\[(size|price)\]$/.test(key)) {
+                        formData.delete(key);
+                    }
+                }
+
+                formData.append(
+                    "variants",
+                    JSON.stringify(cleanVariants)
+                );
+            }
+
+            
+
+            const { data, error } =
+                await actions.products.addProduct(formData);
+
+            const inputErrors =
+                isInputError(error) ? error.issues : [];
+
+            if (error && inputErrors.length) {
+
+                inputErrors.forEach(error =>
+                    toast.error(error.message)
+                );
+
+                return;
+            }
+
+            if (data && !error) {
+
+                toast.success(data.message);
+
+                setTimeout(() => {
+                    navigate("/admin/products");
+                }, 5000);
+            }
+        });
+    }
+</script>

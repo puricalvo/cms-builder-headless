@@ -1,0 +1,20 @@
+---
+import GalleryGrid from "@/components/gallery/GalleryGrid.astro";
+
+import { getTable } from "@/services/pages";
+
+const photos = await getTable("photos");
+---
+
+<section class="bg-white px-20 pb-40 max-w-7xl mx-auto -mt-20 relative">
+
+    <h2 class="text-coffee-400 text-center font-black text-lg uppercase after:coffee-icon pb-10">
+        Vive la
+        <span class="text-coffee-900 text-4xl block">experiencia</span>
+    </h2>
+
+    <GalleryGrid photos={photos} />
+
+</section>
+
+   

@@ -1,0 +1,68 @@
+---
+import PostMeta from "./PostMeta.astro";
+import PostCategories from "./PostCategories.astro";
+---
+
+<div
+    id="post-modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-6"
+>
+
+    <div
+        id="modal-container"
+        class="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl bg-coffee-50 shadow-2xl"
+    >
+
+        <button
+            id="close-modal"
+            class="sticky top-4 float-right mr-4 mt-4 z-20 w-11 h-11 rounded-full bg-coffee-600 text-white text-xl shadow-lg hover:bg-coffee-700 transition-colors"
+        >
+            ✕
+        </button>
+
+        <div class="sticky top-0 z-10 bg-white/90 backdrop-blur-sm">
+            
+            
+        <h3
+            id="modal-title"
+            class="text-coffee-900 font-black text-4xl normal-case text-left p-8 pt-10 pb-6"
+        >
+        </h3>
+        
+
+        <div class="px-10 pb-10">
+            <div class="max-w-4xl mx-auto">
+
+                <p id="modal-date" class="text-sm mb-4">
+                    Escrito el: <span class="text-coffee-600"></span>
+                </p>
+
+                <div
+                    id="modal-categories"
+                    class="flex flex-wrap gap-2 mb-8"
+                >
+                </div>
+
+                <div class="mb-8 flex justify-center">
+                    <img
+                        id="modal-image"
+                        src=""
+                        alt=""
+                        class="w-full max-w-2xl rounded-2xl"
+                    />
+                </div>
+
+                
+
+                <div
+                    id="modal-content"
+                    class="text-lg leading-8 [&>p]:mb-6 pb-8"
+                >
+                </div>
+
+            </div>
+        </div>
+        </div>
+    </div>
+
+</div>

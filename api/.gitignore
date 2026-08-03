@@ -1,0 +1,30 @@
+# Variables de entorno reales
+.env
+.env.local
+.env.production
+.env.development
+
+# Logs
+*.log
+php_error_log
+
+# Archivos temporales
+tmp/
+temp/
+
+# Cache
+cache/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Configuración de IDEs
+.vscode/
+.idea/
+
+# Dependencias Composer
+vendor/
+
+# Dependencias npm (si algún día usas Node)
+node_modules/

@@ -1,0 +1,27 @@
+# Variables de entorno
+.env
+.env.*
+
+# Mantener archivos de ejemplo
+!.env.template
+!.env.example
+
+# Dependencias
+vendor/
+node_modules/
+
+# Logs
+*.log
+php_error_log
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Backups temporales
+*.bak
+*.tmp
+
+# Builds
+dist/
+.astro/

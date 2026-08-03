@@ -1,0 +1,72 @@
+---
+import PostMeta from "./PostMeta.astro";
+import PostCategories from "./PostCategories.astro";
+import { decode } from "@/services/utils";
+
+interface Props {
+    post: any;
+}
+
+const { post } = Astro.props;
+---
+
+<article class="grid grid-cols-1 lg:grid-cols-3 gap-5 py-10 border-b last-of-type:border-0 border-zinc-300">
+
+    <div class="lg:col-span-2 space-y-5">
+
+        <h3 class="text-coffee-900 font-black text-4xl normal-case">
+            <a
+                href="#"
+                class="post-link"
+                data-id={post.id_entrada}
+                data-title={decode(post.title_entrada)}
+                data-image={decode(post.image_entrada)}
+                data-description={decode(post.description_entrada)}
+                data-date={post.date_created_entrada}
+                data-categories={decode(post.categories_entrada)}
+            >
+                {decode(post.title_entrada)}
+            </a>
+        </h3>
+
+        <PostMeta date={post.date_created_entrada} />
+
+        {
+            decode(post.categories_entrada)
+                .split(",")
+                .map((cat: string) => {
+
+                    const name = cat.trim();
+
+                    const slug = name
+                        .toLowerCase()
+                        .normalize("NFD")
+                        .replace(/[\u0300-\u036f]/g, "")
+                        .replace(/\s+/g, "-");
+
+                    return (
+                        <PostCategories
+                            name={name}
+                            slug={slug}
+                        />
+                    );
+
+                })
+        }
+
+        <div
+            class="line-clamp-2 text-lg [&>p]:mb-4"
+            set:html={decode(post.description_entrada)}
+        ></div>
+
+    </div>
+
+    <img
+        src={decode(post.image_entrada)}
+        alt={decode(post.title_entrada)}
+        loading="lazy"
+        class="w-full lg:w-96 h-64 object-cover rounded-2xl "
+       
+    />
+
+</article>

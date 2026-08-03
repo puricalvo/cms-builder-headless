@@ -1,0 +1,50 @@
+---
+import ProductMenu from "./ProductMenu";
+
+interface Props {
+    products: any[];
+}
+
+const { products } = Astro.props;
+---
+
+<tbody class="divide-y divide-gray-200">
+    {
+        products.map((product: any) => (
+            <tr>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    <img
+                        src={product.image}
+                        alt={`Imagen del Producto ${product.title}`}
+                        width={300}
+                        height={300}
+                        class="size-28 object-cover rounded-lg"
+                    />
+                </td>
+
+                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                    {product.title}
+                </td>
+
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    <a
+                        class="bg-indigo-400 p-1 text-white rounded"
+                        href={`/admin/products/${product.category_url}`}
+                    >
+                        {product.category}
+                    </a>
+                </td>
+
+                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                    <ProductMenu
+                        client:only="react"
+                        name={product.title}
+                        id={product.id}
+                        table={product.table}
+                        
+                    />
+                </td>
+            </tr>
+        ))
+    }
+</tbody>

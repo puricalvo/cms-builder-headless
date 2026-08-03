@@ -1,0 +1,47 @@
+---
+import { decode } from "@/services/utils";
+
+interface Props {
+    photos: any[];
+}
+
+const { photos } = Astro.props;
+
+const width = 1200;
+const height = 800;
+---
+
+<div id="gallery" class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+    {
+        photos.map((photo: any) => (
+
+            <a
+                href={decode(photo.file_photo)}
+                data-pswp-width={width}
+                data-pswp-height={height}
+            >
+
+                <img
+                    src={decode(photo.file_photo)}
+                    alt="Galería de imágenes"
+                    loading="lazy"
+                    class="w-full h-full object-cover rounded-lg"
+                />
+
+            </a>
+
+        ))
+    }
+
+</div>
+
+<script>
+    import { initLightbox } from "@/scripts/initLightbox";
+
+    initLightbox("#gallery");
+
+    document.addEventListener("astro:page-load", () => {
+        initLightbox("#gallery");
+    });
+</script>

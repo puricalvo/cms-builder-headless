@@ -1,0 +1,21 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import GalleryGrid from "@/components/gallery/GalleryGrid.astro";
+
+import { getPage, getTable } from "@/services/pages";
+import { decode } from "@/services/utils";
+
+const page = await getPage("galeria");
+const content = await getTable("galerias");
+const photos = await getTable("photos");
+
+const galeria = content[0];
+---
+
+<Layout
+    title={decode(page?.title_page ?? "Galería")}
+    subtitle={decode(galeria?.subtitle_galeria ?? "")}
+    bgImage={decode(galeria?.image_galeria ?? "")}
+>
+    <GalleryGrid photos={photos} />
+</Layout>

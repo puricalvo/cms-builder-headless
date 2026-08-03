@@ -1,0 +1,104 @@
+---
+import ProductsTable from "@/components/admin/products/ProductsTable.astro";
+import AdminProductsLayout from "@/layouts/AdminProductsLayout.astro";
+
+import {
+    getPages,
+    getModuleByPage,
+    getTable
+} from "@/services/pages";
+
+const PRODUCTS_PER_PAGE = 10;
+
+const PAGE = Number(
+    Astro.url.searchParams.get("page") ?? "1"
+);
+
+let products: any[] = [];
+
+// Obtener todas las páginas
+const pages = await getPages();
+
+// Buscar la página padre de Productos
+const parent = pages.find(
+    (page: any) => page.url_page === "productos_freshcoffee"
+);
+
+if (parent) {
+
+    // Obtener todas las páginas hijas excepto catálogo
+    const children = pages.filter(
+        (page: any) =>
+            page.parent_id_page === parent.id &&
+            page.url_page !== "catalogo"
+    );
+
+    // Recorrer todas las categorías
+    for (const page of children) {
+
+        const module = await getModuleByPage(page.id);
+
+        if (!module) continue;
+
+        const data = await getTable(module.title);
+
+        products.push(
+            ...data.map((product: any) => ({
+                ...product,
+                table: module.title,
+                category: page.title_page.replace("Precios ", ""),
+                category_url: page.url_page
+            }))
+        );
+    }
+}
+
+
+// =====================================================
+// PAGINACIÓN
+// =====================================================
+
+const totalProducts = products.length;
+
+const totalPages = Math.ceil(
+    totalProducts / PRODUCTS_PER_PAGE
+);
+
+// Evitamos páginas inválidas
+const currentPage =
+    PAGE < 1
+        ? 1
+        : PAGE > totalPages && totalPages > 0
+            ? totalPages
+            : PAGE;
+
+
+// Índices de los productos que mostraremos
+const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
+const end = start + PRODUCTS_PER_PAGE;
+
+// Productos correspondientes a esta página
+const paginatedProducts = products.slice(start, end);
+
+---
+
+<AdminProductsLayout
+    title="Administrar Productos"
+    page={currentPage}
+    totalPages={totalPages}
+>
+
+    <div slot="before-products-table" class="mt-10">
+        <a
+            href="/admin/products/new"
+            class="bg-amber-400 hover:bg-amber-500 transition-colors px-5 py-2 rounded font-bold"
+        >
+            Nuevo Producto
+        </a>
+    </div>
+
+    <ProductsTable products={paginatedProducts} />
+
+</AdminProductsLayout> 
+
+ 

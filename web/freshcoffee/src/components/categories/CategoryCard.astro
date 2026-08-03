@@ -1,0 +1,31 @@
+---
+interface Props {
+    category: {
+        title_lista: string;
+        icon_lista: string;
+        url_page: string;
+        suffix: string;
+    };
+}
+
+const { category } = Astro.props;
+
+const currentCategory = () =>
+    category.url_page === Astro.params.category;
+---
+
+<div class={`${currentCategory() ? "bg-amber-400" : ""} flex items-center gap-4 p-3 border-t border-gray-200 last-of-type:border-b`}>
+
+    <img 
+        src={category.icon_lista}
+        alt={`Imagen de Categoría ${category.title_lista}`}
+        width={300}
+        height={300}
+        class="w-20 h-20"
+    />
+
+    <a href={`/order/${category.url_page}`} class="text-xl font-bold">
+        {category.title_lista}
+    </a>
+
+</div>

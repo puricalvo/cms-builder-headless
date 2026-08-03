@@ -1,0 +1,109 @@
+---
+import ContactForm from "@/components/contact/ContactForm.astro";
+import LocationMap from "@/components/contact/LocationMap.astro";
+import Layout from "@/layouts/Layout.astro";
+
+import { getPage, getTable } from "@/services/pages";
+import { decode } from "@/services/utils";
+
+const page = await getPage("contacto");
+const content = await getTable("contactos");
+
+const contacto = content[0];
+
+const locations = JSON.parse(
+    decode(contacto?.location_contacto ?? "[]")
+);
+
+const location = locations[0];
+
+---
+
+<Layout
+    title={decode(page?.title_page ?? "Contacto")}
+    subtitle={decode(contacto?.subtitle_contacto ?? "")}
+    bgImage={decode(contacto?.image_contacto ?? "")}
+>
+
+    <div
+        class="text-xl space-y-3 mt-10 lg:mt-0"
+        set:html={decode(contacto?.description_contacto ?? "")}
+    ></div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
+        <ContactForm />
+
+        <LocationMap
+            location={location}
+        />
+    </div>
+
+
+    <!-- =============================================
+         PEDIDOS PARA LLEVAR
+         ============================================= -->
+
+    <div class="mt-10 text-center">
+
+        <h2 class="text-2xl font-bold">
+            ¿Prefieres disfrutar de nuestra comida en casa?
+        </h2>
+
+        <p class="text-lg mt-3">
+            También puedes hacer tu pedido para llevar
+            directamente desde nuestra app.
+        </p>
+
+        <a
+            href="http://localhost:4321/order/pricecafe"
+            class="inline-block mt-5 bg-amber-400 hover:bg-amber-500 transition-colors px-6 py-3 rounded-xl font-bold text-lg"
+        >
+            🛍️ Hacer pedido
+        </a>
+
+    </div>
+
+</Layout>
+
+<!-- ---
+import ContactForm from "@/components/contact/ContactForm.astro";
+import LocationMap from "@/components/contact/LocationMap.astro";
+import Layout from "@/layouts/Layout.astro";
+
+import { getPage, getTable } from "@/services/pages";
+import { decode } from "@/services/utils";
+
+const page = await getPage("contacto");
+const content = await getTable("contactos");
+
+const contacto = content[0];
+
+const locations = JSON.parse(
+    decode(contacto?.location_contacto ?? "[]")
+);
+
+const location = locations[0];
+
+
+---
+
+<Layout
+    title={decode(page?.title_page ?? "Contacto")}
+    subtitle={decode(contacto?.subtitle_contacto ?? "")}
+    bgImage={decode(contacto?.image_contacto ?? "")}
+>
+
+    <div
+        class="text-xl space-y-3 mt-10 lg:mt-0"
+        set:html={decode(contacto?.description_contacto ?? "")}
+    ></div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
+        <ContactForm />
+         <LocationMap 
+             location={location}        />     
+    </div>
+
+</Layout>
+
+ -->

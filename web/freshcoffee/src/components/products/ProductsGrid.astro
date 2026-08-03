@@ -1,0 +1,50 @@
+---
+import ProductCard from "@/components/products/ProductCard.astro";
+import ShowOrderButton from "../order/ShowOrderButton";
+
+import {
+    getPage,
+    getModuleByPage,
+    getTable
+} from "@/services/pages";
+
+const { category } = Astro.params;
+
+let products: any[] = [];
+
+
+
+const page = await getPage(category!);
+
+
+
+if (page) {
+
+    const module = await getModuleByPage(page.id);
+
+    
+
+    if (module) {
+
+       
+
+        products = (await getTable(module.title)).map((product: any) => ({
+            ...product,
+            table: module.title
+        }));
+
+        
+
+    }
+
+}
+---
+
+<div class="flex justify-between items-center">
+    <h1 class="text-2xl my-10">Elige y Personaliza tu Pedido a continuación</h1>
+    <ShowOrderButton client:only="react" />
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 items-stretch">
+    {products.map(product => <ProductCard product={product} />)}
+</div>
