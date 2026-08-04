@@ -33,6 +33,22 @@ class Connection{
 	}
 
 	/*=============================================
+	Configuración Redsys
+	=============================================*/
+
+	static public function redsys(){
+
+		return [
+			"environment" => $_ENV["REDSYS_ENVIRONMENT"] ?? "test",
+			"merchantCode" => $_ENV["REDSYS_MERCHANT_CODE"] ?? "",
+			"terminal" => $_ENV["REDSYS_TERMINAL"] ?? "",
+			"secretKey" => $_ENV["REDSYS_SECRET_KEY"] ?? "",
+			"apiKey" => $_ENV["REDSYS_API_KEY"] ?? ""
+		];
+
+	}
+
+	/*=============================================
 	Acceso público
 	=============================================*/
 	

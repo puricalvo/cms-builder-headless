@@ -18,6 +18,7 @@ $route = explode("?", $routesArray[1] ?? $routesArray[0] ?? "")[0];
 
 $isMediaEndpoint = ($route === "media");
 $isExternalEndpoint = ($route === "externas");
+$isRedsysEndpoint = ($route === "redsys");
 
 /*=============================================
 Cuando no se hace ninguna petición a la API
@@ -65,6 +66,17 @@ if(count($routesArray) == 1 && isset($_SERVER['REQUEST_METHOD'])){
 
 		require_once "services/externas.php";
         return;
+
+	}
+
+	/*=============================================
+	Endpoint independiente para Redsys
+	=============================================*/
+
+	if ($isRedsysEndpoint) {
+
+		require_once "services/redsys.php";
+		return;
 
 	}
 
