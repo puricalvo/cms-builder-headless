@@ -104,6 +104,11 @@ export const OrderContentSchema = z.object({
     total_order: z.coerce.number(),
     status_order: z.string(),
     name_order: z.string(),
+    phone_order: z.string(),
+    payment_method_order: z.string(),
+    payment_status_order: z.string(),
+    delivery_method_order: z.string(),
+    delivery_address_order: z.string(),
     items_order: z.string(),
     date_created_order: z.string(),
     date_updated_order: z.string()
