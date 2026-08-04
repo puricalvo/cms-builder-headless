@@ -2,6 +2,8 @@
 .env
 .env.*
 
+redsys-test.html
+
 # Mantener archivos de ejemplo
 !.env.template
 !.env.example
