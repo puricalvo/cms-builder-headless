@@ -1,5 +1,6 @@
 ---
 import ProductCard from "@/components/products/ProductCard.astro";
+import GuestTimer from "@/components/order/GuestTimer";
 import ShowOrderButton from "../order/ShowOrderButton";
 
 import {
@@ -42,6 +43,7 @@ if (page) {
 
 <div class="flex justify-between items-center">
     <h1 class="text-2xl my-10">Elige y Personaliza tu Pedido a continuación</h1>
+    <GuestTimer client:only="react" />
     <ShowOrderButton client:only="react" />
 </div>
 

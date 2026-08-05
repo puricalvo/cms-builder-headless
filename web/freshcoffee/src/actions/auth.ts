@@ -6,6 +6,7 @@ import { createCustomer } from "@/services/customers";
 export const auth = {
 
     signInAsGuest: defineAction({
+
         handler: async (_, ctx) => {
 
            
@@ -15,6 +16,33 @@ export const auth = {
                 sameSite: "strict",
                 path: "/",
                 maxAge: 60 * 60 * 24 * 30
+            });
+
+            return true;
+        }
+    }),
+
+    startGuestSession: defineAction({
+        accept: "form",
+
+        handler: async (_, ctx) => {
+
+            ctx.cookies.set("FRESHCOFFEE_TOKEN", "INVITADO", {
+                httpOnly: true,
+                sameSite: "strict",
+                path: "/",
+                maxAge: 60 * 60 * 24 * 30
+            });
+
+            return true;
+        }
+    }),
+
+    signOutGuest: defineAction({
+        handler: async (_, ctx) => {
+
+            ctx.cookies.delete("FRESHCOFFEE_TOKEN", {
+                path: "/",
             });
 
             return true;
