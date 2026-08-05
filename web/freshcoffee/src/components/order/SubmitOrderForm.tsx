@@ -18,11 +18,18 @@ export default function SubmitOrderForm() {
     const [paymentMethod, setPaymentMethod] =
         useState<"cash" | "card">("cash");
 
+    const [isProcessing, setIsProcessing] =
+        useState(false);
+
     const handleSubmit = async (
         e: React.FormEvent<HTMLFormElement>
     ) => {
 
         e.preventDefault();
+
+        if (isProcessing) {
+            return;
+        }
 
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
@@ -60,8 +67,100 @@ export default function SubmitOrderForm() {
             return;
         }
 
+        if (!order.length) {
+            toast.error(
+                "No hay productos en el pedido"
+            );
+            return;
+        }
+
         /*
-         * CREAR PEDIDO
+         * BLOQUEAMOS EL FORMULARIO
+         *
+         * Desde este momento no permitimos
+         * enviar el formulario dos veces.
+         */
+
+        setIsProcessing(true);
+
+        /*
+         * =============================================
+         * PAGO CON TARJETA
+         * =============================================
+         *
+         * IMPORTANTE:
+         *
+         * Aquí NO creamos todavía la orden.
+         *
+         * El pedido se mantiene en el carrito mientras
+         * se realiza el pago.
+         *
+         * El siguiente paso será enviar este pedido
+         * a nuestra API para iniciar Redsys.
+         */
+
+        if (paymentMethod === "card") {
+
+            const { data, error } =
+                await actions.redsys.createPayment({
+                    amount: 1
+                });
+
+            if (error) {
+
+                toast.error(
+                    isActionError(error)
+                        ? error.message
+                        : "No se ha podido iniciar el pago con tarjeta"
+                );
+
+                return;
+            }
+
+            if (data?.paymentForm) {
+
+                const container =
+                    document.createElement("div");
+
+                container.innerHTML =
+                    data.paymentForm;
+
+                const form =
+                    container.querySelector(
+                        "#redirectForm"
+                    ) as HTMLFormElement | null;
+
+                if (!form) {
+
+                    toast.error(
+                        "No se ha podido preparar el pago con Redsys"
+                    );
+
+                    return;
+                }
+
+                document.body.appendChild(form);
+
+                form.submit();
+
+                return;
+            }
+
+            toast.error(
+                "Redsys no ha devuelto el formulario de pago"
+            );
+
+            return;
+        }
+        /*
+         * =============================================
+         * PAGO EN EFECTIVO
+         * =============================================
+         *
+         * Este es el flujo que ya funcionaba.
+         *
+         * La orden se crea directamente y queda
+         * pendiente de cobro.
          */
 
         const { data, error } =
@@ -85,6 +184,8 @@ export default function SubmitOrderForm() {
 
         if (inputErrors.length) {
 
+            setIsProcessing(false);
+
             inputErrors.forEach(error => {
                 toast.error(error.message);
             });
@@ -102,6 +203,8 @@ export default function SubmitOrderForm() {
                 : null;
 
         if (actionError) {
+
+            setIsProcessing(false);
 
             /*
              * EL CLIENTE NO ESTÁ AUTENTICADO
@@ -143,7 +246,11 @@ export default function SubmitOrderForm() {
             setTimeout(() => {
                 navigate("/");
             }, 5000);
+
+            return;
         }
+
+        setIsProcessing(false);
     };
 
     return (
@@ -170,6 +277,7 @@ export default function SubmitOrderForm() {
                         placeholder="Coloca tu Nombre"
                         className="border border-gray-300 p-2 w-full rounded-xl"
                         required
+                        disabled={isProcessing}
                     />
 
                 </div>
@@ -190,6 +298,7 @@ export default function SubmitOrderForm() {
                         placeholder="Tu número de teléfono"
                         className="border border-gray-300 p-2 w-full rounded-xl"
                         required
+                        disabled={isProcessing}
                     />
 
                 </div>
@@ -213,6 +322,7 @@ export default function SubmitOrderForm() {
                                 setDeliveryMethod("pickup")
                             }
                             required
+                            disabled={isProcessing}
                         />
 
                         <span>
@@ -233,6 +343,7 @@ export default function SubmitOrderForm() {
                             onChange={() =>
                                 setDeliveryMethod("delivery")
                             }
+                            disabled={isProcessing}
                         />
 
                         <span>
@@ -260,6 +371,7 @@ export default function SubmitOrderForm() {
                             placeholder="Escribe tu dirección completa"
                             className="border border-gray-300 p-2 w-full rounded-xl min-h-24"
                             required
+                            disabled={isProcessing}
                         />
 
                     </div>
@@ -285,6 +397,7 @@ export default function SubmitOrderForm() {
                                 setPaymentMethod("cash")
                             }
                             required
+                            disabled={isProcessing}
                         />
 
                         <span>
@@ -305,6 +418,7 @@ export default function SubmitOrderForm() {
                             onChange={() =>
                                 setPaymentMethod("card")
                             }
+                            disabled={isProcessing}
                         />
 
                         <span>
@@ -316,10 +430,16 @@ export default function SubmitOrderForm() {
                 </div>
 
                 <button
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white w-full rounded-xl py-3 mt-5 text-lg font-bold uppercase cursor-pointer"
+                    className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white w-full rounded-xl py-3 mt-5 text-lg font-bold uppercase cursor-pointer disabled:cursor-not-allowed"
                     type="submit"
+                    disabled={isProcessing}
                 >
-                    Realizar Pedido
+                    {isProcessing
+                        ? "Procesando..."
+                        : paymentMethod === "card"
+                            ? "Pagar con tarjeta"
+                            : "Realizar Pedido"
+                    }
                 </button>
 
             </div>
