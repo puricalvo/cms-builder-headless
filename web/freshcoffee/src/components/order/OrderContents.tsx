@@ -28,7 +28,7 @@ export default function OrderContents() {
                         Total a pagar: {formatCurrency(total)}
                     </h2>
 
-                    <SubmitOrderForm />
+                    <SubmitOrderForm total={total}/>
                 </>
             
             

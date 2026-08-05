@@ -8,7 +8,13 @@ import { navigate } from "astro:transitions/client";
 import { toast } from "react-toastify";
 import { useState } from "react";
 
-export default function SubmitOrderForm() {
+type SubmitOrderFormProps = {
+    total: number
+}
+
+export default function SubmitOrderForm({
+    total
+}: SubmitOrderFormProps) {
 
     const { order } = useOrderStore();
 
@@ -101,9 +107,11 @@ export default function SubmitOrderForm() {
 
         if (paymentMethod === "card") {
 
+            const amount = Math.round(total * 100);
+
             const { data, error } =
                 await actions.redsys.createPayment({
-                    amount: 1
+                    amount
                 });
 
             if (error) {
