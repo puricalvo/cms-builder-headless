@@ -50,11 +50,44 @@ if (result?.data) {
 
 <script>
 
+    const GUEST_TIME = 2 * 60 * 1000;
+
     const form = document.querySelector(
         'form[action*="startGuestSession"]'
     );
 
     form?.addEventListener("submit", () => {
+
+        const started =
+            localStorage.getItem(
+                "freshcoffee-guest-started"
+            );
+
+        if (started) {
+
+            const elapsed =
+                Date.now() - Number(started);
+
+            if (elapsed >= GUEST_TIME) {
+
+                localStorage.setItem(
+                    "freshcoffee-order",
+                    JSON.stringify({
+                        state: {
+                            isOrderDrawerOpen: false,
+                            order: []
+                        },
+                        version: 0
+                    })
+                );
+
+                localStorage.removeItem(
+                    "freshcoffee-guest-started"
+                );
+
+            }
+
+        }
 
         localStorage.setItem(
             "freshcoffee-guest-started",
@@ -62,7 +95,6 @@ if (result?.data) {
         );
 
     });
-
 
     const expiredMessage = document.querySelector(
         "#guest-expired-message"

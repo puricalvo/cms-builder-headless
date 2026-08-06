@@ -231,10 +231,25 @@ export default function SubmitOrderForm({
                 return;
             }
 
+              if (actionError === "INVITADO") {
+
+                toast.info(
+                    "Como invitado puedes preparar tu pedido, pero para finalizar la compra debes iniciar sesión o registrarte."
+                );
+
+                setTimeout(() => {
+                    navigate("/");
+                }, 4000);
+
+                return;
+            }
+
             toast.error(actionError);
 
             return;
         }
+
+      
 
         /*
          * PEDIDO CREADO CORRECTAMENTE
