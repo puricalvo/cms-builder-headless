@@ -27,9 +27,9 @@ export async function createOrder(
             payment_method_order: data.paymentMethod,
 
             payment_status_order:
-                data.paymentMethod === "card"
-                    ? "paid"
-                    : "pending_payment",
+            data.paymentMethod === "card"
+                ? "paid"
+                : "pending_payment",
 
             delivery_method_order:
                 data.deliveryMethod,
@@ -64,6 +64,7 @@ export async function updateOrderStatus(
         }
     );
 }
+
 
 export async function deleteOrder(id: number) {
 

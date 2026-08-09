@@ -7,6 +7,7 @@ import {
 import { navigate } from "astro:transitions/client";
 import { toast } from "react-toastify";
 import { useState } from "react";
+import RedsysCardModal from "@/components/ui/RedsysCardModal";
 
 type SubmitOrderFormProps = {
     total: number
@@ -25,6 +26,9 @@ export default function SubmitOrderForm({
         useState<"cash" | "card">("cash");
 
     const [isProcessing, setIsProcessing] =
+        useState(false);
+
+    const [isCardModalOpen, setIsCardModalOpen] =
         useState(false);
 
     const handleSubmit = async (
@@ -82,9 +86,6 @@ export default function SubmitOrderForm({
 
         /*
          * BLOQUEAMOS EL FORMULARIO
-         *
-         * Desde este momento no permitimos
-         * enviar el formulario dos veces.
          */
 
         setIsProcessing(true);
@@ -94,81 +95,37 @@ export default function SubmitOrderForm({
          * PAGO CON TARJETA
          * =============================================
          *
-         * IMPORTANTE:
+         * De momento solamente abrimos
+         * nuestro nuevo modal.
          *
-         * Aquí NO creamos todavía la orden.
-         *
-         * El pedido se mantiene en el carrito mientras
-         * se realiza el pago.
-         *
-         * El siguiente paso será enviar este pedido
-         * a nuestra API para iniciar Redsys.
+         * NO llamamos todavía a Redsys.
          */
 
         if (paymentMethod === "card") {
 
-            const amount = Math.round(total * 100);
-
-            const { data, error } =
-                await actions.redsys.createPayment({
-                    amount
-                });
-
-            if (error) {
-
-                toast.error(
-                    isActionError(error)
-                        ? error.message
-                        : "No se ha podido iniciar el pago con tarjeta"
-                );
-
-                return;
-            }
-
-            if (data?.paymentForm) {
-
-                const container =
-                    document.createElement("div");
-
-                container.innerHTML =
-                    data.paymentForm;
-
-                const form =
-                    container.querySelector(
-                        "#redirectForm"
-                    ) as HTMLFormElement | null;
-
-                if (!form) {
-
-                    toast.error(
-                        "No se ha podido preparar el pago con Redsys"
-                    );
-
-                    return;
-                }
-
-                document.body.appendChild(form);
-
-                form.submit();
-
-                return;
-            }
-
-            toast.error(
-                "Redsys no ha devuelto el formulario de pago"
+            sessionStorage.setItem(
+                "pending_order",
+                JSON.stringify({
+                    name,
+                    phone,
+                    deliveryMethod,
+                    deliveryAddress,
+                    order
+                })
             );
+
+            setIsProcessing(false);
+            setIsCardModalOpen(true);
 
             return;
         }
+
         /*
          * =============================================
          * PAGO EN EFECTIVO
          * =============================================
          *
-         * Este es el flujo que ya funcionaba.
-         *
-         * La orden se crea directamente y queda
-         * pendiente de cobro.
+         * Este flujo no lo tocamos.
          */
 
         const { data, error } =
@@ -214,14 +171,10 @@ export default function SubmitOrderForm({
 
             setIsProcessing(false);
 
-            /*
-             * EL CLIENTE NO ESTÁ AUTENTICADO
-             */
-
             if (actionError === "No hay token") {
 
                 toast.info(
-                    "Para realizar el pedido debes iniciar sesión o registrarte"
+                    "Como invitado puedes preparar tu pedido, pero para finalizar la compra debes iniciar sesión o registrarte."
                 );
 
                 setTimeout(() => {
@@ -231,7 +184,7 @@ export default function SubmitOrderForm({
                 return;
             }
 
-              if (actionError === "INVITADO") {
+            if (actionError === "INVITADO") {
 
                 toast.info(
                     "Como invitado puedes preparar tu pedido, pero para finalizar la compra debes iniciar sesión o registrarte."
@@ -248,8 +201,6 @@ export default function SubmitOrderForm({
 
             return;
         }
-
-      
 
         /*
          * PEDIDO CREADO CORRECTAMENTE
@@ -277,196 +228,203 @@ export default function SubmitOrderForm({
     };
 
     return (
-        <form
-            className="mt-5"
-            onSubmit={handleSubmit}
-        >
+        <>
+            <form
+                className="mt-5"
+                onSubmit={handleSubmit}
+            >
 
-            <div className="space-y-5">
-
-                <div className="space-y-3">
-
-                    <label
-                        htmlFor="name"
-                        className="font-bold text-lg"
-                    >
-                        Tu Nombre:
-                    </label>
-
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        placeholder="Coloca tu Nombre"
-                        className="border border-gray-300 p-2 w-full rounded-xl"
-                        required
-                        disabled={isProcessing}
-                    />
-
-                </div>
-
-                <div className="space-y-3">
-
-                    <label
-                        htmlFor="phone"
-                        className="font-bold text-lg"
-                    >
-                        Teléfono:
-                    </label>
-
-                    <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        placeholder="Tu número de teléfono"
-                        className="border border-gray-300 p-2 w-full rounded-xl"
-                        required
-                        disabled={isProcessing}
-                    />
-
-                </div>
-
-                <div className="space-y-3">
-
-                    <p className="font-bold text-lg">
-                        ¿Cómo quieres recibir tu pedido?
-                    </p>
-
-                    <label className="flex items-center gap-3 cursor-pointer">
-
-                        <input
-                            type="radio"
-                            name="delivery_method"
-                            value="pickup"
-                            checked={
-                                deliveryMethod === "pickup"
-                            }
-                            onChange={() =>
-                                setDeliveryMethod("pickup")
-                            }
-                            required
-                            disabled={isProcessing}
-                        />
-
-                        <span>
-                            Recoger en cafetería
-                        </span>
-
-                    </label>
-
-                    <label className="flex items-center gap-3 cursor-pointer">
-
-                        <input
-                            type="radio"
-                            name="delivery_method"
-                            value="delivery"
-                            checked={
-                                deliveryMethod === "delivery"
-                            }
-                            onChange={() =>
-                                setDeliveryMethod("delivery")
-                            }
-                            disabled={isProcessing}
-                        />
-
-                        <span>
-                            Reparto a domicilio
-                        </span>
-
-                    </label>
-
-                </div>
-
-                {deliveryMethod === "delivery" && (
+                <div className="space-y-5">
 
                     <div className="space-y-3">
 
                         <label
-                            htmlFor="delivery_address"
+                            htmlFor="name"
                             className="font-bold text-lg"
                         >
-                            Dirección de entrega:
+                            Tu Nombre:
                         </label>
 
-                        <textarea
-                            id="delivery_address"
-                            name="delivery_address"
-                            placeholder="Escribe tu dirección completa"
-                            className="border border-gray-300 p-2 w-full rounded-xl min-h-24"
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Coloca tu Nombre"
+                            className="border border-gray-300 p-2 w-full rounded-xl"
                             required
                             disabled={isProcessing}
                         />
 
                     </div>
 
-                )}
+                    <div className="space-y-3">
 
-                <div className="space-y-3">
-
-                    <p className="font-bold text-lg">
-                        Forma de pago:
-                    </p>
-
-                    <label className="flex items-center gap-3 cursor-pointer">
+                        <label
+                            htmlFor="phone"
+                            className="font-bold text-lg"
+                        >
+                            Teléfono:
+                        </label>
 
                         <input
-                            type="radio"
-                            name="payment_method"
-                            value="cash"
-                            checked={
-                                paymentMethod === "cash"
-                            }
-                            onChange={() =>
-                                setPaymentMethod("cash")
-                            }
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            placeholder="Tu número de teléfono"
+                            className="border border-gray-300 p-2 w-full rounded-xl"
                             required
                             disabled={isProcessing}
                         />
 
-                        <span>
-                            Pago en efectivo
-                        </span>
+                    </div>
 
-                    </label>
+                    <div className="space-y-3">
 
-                    <label className="flex items-center gap-3 cursor-pointer">
+                        <p className="font-bold text-lg">
+                            ¿Cómo quieres recibir tu pedido?
+                        </p>
 
-                        <input
-                            type="radio"
-                            name="payment_method"
-                            value="card"
-                            checked={
-                                paymentMethod === "card"
-                            }
-                            onChange={() =>
-                                setPaymentMethod("card")
-                            }
-                            disabled={isProcessing}
-                        />
+                        <label className="flex items-center gap-3 cursor-pointer">
 
-                        <span>
-                            Pago con tarjeta
-                        </span>
+                            <input
+                                type="radio"
+                                name="delivery_method"
+                                value="pickup"
+                                checked={
+                                    deliveryMethod === "pickup"
+                                }
+                                onChange={() =>
+                                    setDeliveryMethod("pickup")
+                                }
+                                required
+                                disabled={isProcessing}
+                            />
 
-                    </label>
+                            <span>
+                                Recoger en cafetería
+                            </span>
+
+                        </label>
+
+                        <label className="flex items-center gap-3 cursor-pointer">
+
+                            <input
+                                type="radio"
+                                name="delivery_method"
+                                value="delivery"
+                                checked={
+                                    deliveryMethod === "delivery"
+                                }
+                                onChange={() =>
+                                    setDeliveryMethod("delivery")
+                                }
+                                disabled={isProcessing}
+                            />
+
+                            <span>
+                                Reparto a domicilio
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                    {deliveryMethod === "delivery" && (
+
+                        <div className="space-y-3">
+
+                            <label
+                                htmlFor="delivery_address"
+                                className="font-bold text-lg"
+                            >
+                                Dirección de entrega:
+                            </label>
+
+                            <textarea
+                                id="delivery_address"
+                                name="delivery_address"
+                                placeholder="Escribe tu dirección completa"
+                                className="border border-gray-300 p-2 w-full rounded-xl min-h-24"
+                                required
+                                disabled={isProcessing}
+                            />
+
+                        </div>
+
+                    )}
+
+                    <div className="space-y-3">
+
+                        <p className="font-bold text-lg">
+                            Forma de pago:
+                        </p>
+
+                        <label className="flex items-center gap-3 cursor-pointer">
+
+                            <input
+                                type="radio"
+                                name="payment_method"
+                                value="cash"
+                                checked={
+                                    paymentMethod === "cash"
+                                }
+                                onChange={() =>
+                                    setPaymentMethod("cash")
+                                }
+                                required
+                                disabled={isProcessing}
+                            />
+
+                            <span>
+                                Pago en efectivo
+                            </span>
+
+                        </label>
+
+                        <label className="flex items-center gap-3 cursor-pointer">
+
+                            <input
+                                type="radio"
+                                name="payment_method"
+                                value="card"
+                                checked={
+                                    paymentMethod === "card"
+                                }
+                                onChange={() =>
+                                    setPaymentMethod("card")
+                                }
+                                disabled={isProcessing}
+                            />
+
+                            <span>
+                                Pago con tarjeta
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                    <button
+                        className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white w-full rounded-xl py-3 mt-5 text-lg font-bold uppercase cursor-pointer disabled:cursor-not-allowed"
+                        type="submit"
+                        disabled={isProcessing}
+                    >
+                        {isProcessing
+                            ? "Procesando..."
+                            : paymentMethod === "card"
+                                ? "Pagar con tarjeta"
+                                : "Realizar Pedido"
+                        }
+                    </button>
 
                 </div>
 
-                <button
-                    className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white w-full rounded-xl py-3 mt-5 text-lg font-bold uppercase cursor-pointer disabled:cursor-not-allowed"
-                    type="submit"
-                    disabled={isProcessing}
-                >
-                    {isProcessing
-                        ? "Procesando..."
-                        : paymentMethod === "card"
-                            ? "Pagar con tarjeta"
-                            : "Realizar Pedido"
-                    }
-                </button>
+            </form>
 
-            </div>
-
-        </form>
+            <RedsysCardModal
+                isOpen={isCardModalOpen}
+                onClose={() => setIsCardModalOpen(false)}
+            />
+        </>
     );
 }

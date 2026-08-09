@@ -1,154 +1,223 @@
 <?php
 
-
-
 require_once "models/connection.php";
 require_once "controllers/get.controller.php";
 
-$routesArray = explode("/", $_SERVER['REQUEST_URI']);
-$routesArray = array_filter($routesArray);
+$routesArray = array_values(
+    array_filter(
+        explode(
+            "/",
+            parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)
+        )
+    )
+);
 
-
+if (($routesArray[0] ?? "") === "api") {
+    array_shift($routesArray);
+}
 
 /*=============================================
 Variables de rutas especiales
 =============================================*/
 
-$route = explode("?", $routesArray[1] ?? $routesArray[0] ?? "")[0];
+$route = $routesArray[0] ?? "";
 
 $isMediaEndpoint = ($route === "media");
+
 $isExternalEndpoint = ($route === "externas");
+
+$isRedsysChallengeEndpoint = (
+    $route === "redsys" &&
+    ($routesArray[1] ?? "") === "challenge-response"
+);
+
+$isRedsysCardEndpoint = (
+    $route === "redsys" &&
+    ($routesArray[1] ?? "") === "card" &&
+    ($routesArray[2] ?? "") === "rest"
+);
+
 $isRedsysEndpoint = ($route === "redsys");
+
 
 /*=============================================
 Cuando no se hace ninguna petición a la API
 =============================================*/
 
-if(count($routesArray) == 0){
+if (count($routesArray) == 0) {
 
-	$json = array(
+    $json = array(
+        'status' => 404,
+        'results' => 'Not Found'
+    );
 
-		'status' => 404,
-		'results' => 'Not Found'
+    echo json_encode(
+        $json,
+        http_response_code($json["status"])
+    );
 
-	);
-
-	echo json_encode($json, http_response_code($json["status"]));
-
-	return;
-
+    return;
 }
+
 
 /*=============================================
 Cuando si se hace una petición a la API
 =============================================*/
 
-if(count($routesArray) == 1 && isset($_SERVER['REQUEST_METHOD'])){
+if (
+    count($routesArray) >= 1 &&
+    isset($_SERVER['REQUEST_METHOD'])
+) {
 
-	$table = explode("?", $routesArray[1])[0];
+    $table = explode("?", $routesArray[0])[0];
 
-	/*=============================================
-	Endpoint independiente para Multimedia
-	=============================================*/
 
-	if ($isMediaEndpoint) {
+    /*=============================================
+    Endpoint independiente para Multimedia
+    =============================================*/
 
-		require_once "services/media.php";
-		return;
+    if ($isMediaEndpoint) {
 
-	}
+        require_once "services/media.php";
 
-	/*=============================================
-	Endpoint independiente para datos externos
-	=============================================*/
-
-	if ($isExternalEndpoint) {
-
-		require_once "services/externas.php";
         return;
+    }
 
-	}
 
-	/*=============================================
-	Endpoint independiente para Redsys
-	=============================================*/
+    /*=============================================
+    Endpoint independiente para datos externos
+    =============================================*/
 
-	if ($isRedsysEndpoint) {
+    if ($isExternalEndpoint) {
 
-		require_once "services/redsys.php";
-		return;
+        require_once "services/externas.php";
 
-	}
+        return;
+    }
 
-	/*=============================================
-	Validar llave secreta
-	=============================================*/
 
-	if(!isset(getallheaders()["Authorization"]) || getallheaders()["Authorization"] != Connection::apikey()){
+    /*=============================================
+    Endpoint independiente para Redsys Challenge
+    =============================================*/
 
-		if(in_array($table, Connection::publicAccess()) == 0){
-	
-			$json = array(
-		
-				'status' => 400,
-				"results" => "You are not authorized to make this request"
-			);
+    if ($isRedsysChallengeEndpoint) {
 
-			echo json_encode($json, http_response_code($json["status"]));
+        require_once "services/redsys_challenge.php";
 
-			return;
+        return;
+    }
 
-		}else{
 
-			/*=============================================
-			Acceso público
-			=============================================*/
-			$response = new GetController();
-			$response -> getData($table, "*",null,null,null,null);
+    /*=============================================
+    Endpoint independiente para Redsys card REST
+    =============================================*/
 
-			return;
-		}
-	
-	}
+    if ($isRedsysCardEndpoint) {
 
-	/*=============================================
-	Peticiones GET
-	=============================================*/
+        require_once "services/redsys_card.php";
 
-	if($_SERVER['REQUEST_METHOD'] == "GET"){
+        return;
+    }
 
-		include "services/get.php";
 
-	}
+    /*=============================================
+    Endpoint independiente para Redsys
+    =============================================*/
 
-	/*=============================================
-	Peticiones POST
-	=============================================*/
+    if ($isRedsysEndpoint) {
 
-	if($_SERVER['REQUEST_METHOD'] == "POST"){
+        require_once "services/redsys.php";
 
-		include "services/post.php";
+        return;
+    }
 
-	}
 
-	/*=============================================
-	Peticiones PUT
-	=============================================*/
+    /*=============================================
+    Validar llave secreta
+    =============================================*/
 
-	if($_SERVER['REQUEST_METHOD'] == "PUT"){
+    if (
+        !isset(getallheaders()["Authorization"]) ||
+        getallheaders()["Authorization"] != Connection::apikey()
+    ) {
 
-		include "services/put.php";
+        if (
+            in_array(
+                $table,
+                Connection::publicAccess()
+            ) == 0
+        ) {
 
-	}
+            $json = array(
+                'status' => 400,
+                "results" => "You are not authorized to make this request"
+            );
 
-	/*=============================================
-	Peticiones DELETE
-	=============================================*/
+            echo json_encode(
+                $json,
+                http_response_code($json["status"])
+            );
 
-	if($_SERVER['REQUEST_METHOD'] == "DELETE"){
+            return;
 
-		include "services/delete.php";
+        } else {
 
-	}
+            /*=============================================
+            Acceso público
+            =============================================*/
 
+            $response = new GetController();
+
+            $response->getData(
+                $table,
+                "*",
+                null,
+                null,
+                null,
+                null
+            );
+
+            return;
+        }
+    }
+
+
+    /*=============================================
+    Peticiones GET
+    =============================================*/
+
+    if ($_SERVER['REQUEST_METHOD'] == "GET") {
+
+        include "services/get.php";
+    }
+
+
+    /*=============================================
+    Peticiones POST
+    =============================================*/
+
+    if ($_SERVER['REQUEST_METHOD'] == "POST") {
+
+        include "services/post.php";
+    }
+
+
+    /*=============================================
+    Peticiones PUT
+    =============================================*/
+
+    if ($_SERVER['REQUEST_METHOD'] == "PUT") {
+
+        include "services/put.php";
+    }
+
+
+    /*=============================================
+    Peticiones DELETE
+    =============================================*/
+
+    if ($_SERVER['REQUEST_METHOD'] == "DELETE") {
+
+        include "services/delete.php";
+    }
 }

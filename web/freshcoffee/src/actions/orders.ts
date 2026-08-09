@@ -37,8 +37,6 @@ export const orders = {
             const token =
                 ctx.cookies.get("FRESHCOFFEE_TOKEN")?.value;
 
-                console.log("TOKEN EN CREATEORDER:", token);
-
             if (!token) {
 
                 throw new ActionError({
@@ -52,8 +50,7 @@ export const orders = {
 
             if (token === "INVITADO") {
 
-                console.log("ENTRA COMO INVITADO");
-
+            
                 throw new ActionError({
                     message: "INVITADO",
                     code: "UNAUTHORIZED"
@@ -64,6 +61,7 @@ export const orders = {
     
 
             const response = await createOrder(
+                
                 {
                     name: input.name,
                     phone: input.phone,
@@ -75,9 +73,12 @@ export const orders = {
                 token
             );
 
-            return {
+
+             return {
                 message: "Pedido creado correctamente",
+                id_order: response.results.lastId,
                 response
+
             };
         }
     }),
@@ -121,5 +122,7 @@ export const orders = {
                 throw error;
             }
         }
-    })
+    }),
+
+   
 };

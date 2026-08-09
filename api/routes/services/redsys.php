@@ -136,15 +136,8 @@ Importe
 
 $params->amount = $amount;
 
-/*=============================================
-Número de pedido
-=============================================*/
-
 /*
  * Para esta prueba utilizamos timestamp.
- *
- * Más adelante lo relacionaremos con
- * nuestro pedido real.
  */
 
 $params->order = (string) time();
@@ -154,6 +147,19 @@ Tipo de operación
 =============================================*/
 
 $params->transactionType = "0";
+
+/*=============================================
+URLs de retorno de Redsys
+=============================================*/
+
+$params->merchantUrl =
+    "http://cms-builder-headless-api.com/routes/services/redsys_notify.php";
+
+$params->urlOk =
+    "http://localhost:4321/order/pricecafe";
+
+$params->urlKo =
+    "http://localhost:4321/order/pricecafe";
 
 /*=============================================
 Generar redirección Redsys
