@@ -14,13 +14,6 @@ export default function RedsysReturnHandler() {
              * =============================================
              * COMPROBAR PEDIDO PENDIENTE
              * =============================================
-             *
-             * Este dato solamente existe cuando el cliente
-             * inició un pago con tarjeta.
-             *
-             * Redsys ya ha hecho el challenge y nuestro PHP
-             * solamente vuelve a /order/pricecafe cuando el
-             * pago ha sido autorizado.
              */
 
             const pendingOrder =
@@ -39,17 +32,32 @@ export default function RedsysReturnHandler() {
                         pendingOrder
                     );
 
-               
+                /*
+                 * =============================================
+                 * DATOS DEL PEDIDO DE PRUEBA
+                 * =============================================
+                 *
+                 * Estos datos solamente existen cuando el
+                 * administrador ha entrado mediante:
+                 *
+                 * /order/pricecafe?testOrder=1
+                 */
+
+                const isTestOrder =
+                    orderData.isTestOrder === true;
+
+                const adminName =
+                    orderData.adminName
+                        ?.toString()
+                        .trim() ?? "";
 
                 /*
                  * =============================================
                  * CREAR PEDIDO
                  * =============================================
                  *
-                 * IMPORTANTE:
-                 * El pedido se crea AHORA.
-                 *
-                 * Nunca antes del pago.
+                 * El pedido se crea solamente después de
+                 * que Redsys haya autorizado el pago.
                  */
 
                 const { data, error } =
@@ -71,10 +79,20 @@ export default function RedsysReturnHandler() {
                             orderData.deliveryAddress,
 
                         order:
-                            orderData.order
-                    });
+                            orderData.order,
 
-            
+                        /*
+                         * Si es prueba enviamos los datos.
+                         * Para un pedido normal será false.
+                         */
+
+                        isTestOrder,
+
+                        adminName:
+                            isTestOrder
+                                ? adminName
+                                : undefined
+                    });
 
                 /*
                  * =============================================
@@ -107,24 +125,50 @@ export default function RedsysReturnHandler() {
                 );
 
                 /*
-                 * Vaciar carrito y cerrar drawer.
+                 * Vaciar el mismo carrito que utiliza
+                 * el cliente.
                  */
 
                 useOrderStore.setState({
+
                     order: [],
+
                     isOrderDrawerOpen: false
+
                 });
 
                 /*
-                 * Mensaje de éxito.
+                 * =============================================
+                 * MENSAJE DE ÉXITO
+                 * =============================================
                  */
 
                 toast.success(
-                    "¡Pago autorizado! Tu pedido se ha realizado correctamente."
+                    isTestOrder
+                        ? "¡Pago autorizado! El pedido de prueba se ha creado correctamente."
+                        : "¡Pago autorizado! Tu pedido se ha realizado correctamente."
                 );
 
                 /*
-                 * Cerrar sesión.
+                 * =============================================
+                 * PEDIDO DE PRUEBA
+                 * =============================================
+                 *
+                 * El administrador mantiene su sesión
+                 * y permanece en la página.
+                 */
+
+                if (isTestOrder) {
+
+                    return;
+                }
+
+                /*
+                 * =============================================
+                 * PEDIDO NORMAL
+                 * =============================================
+                 *
+                 * Mantenemos el comportamiento anterior.
                  */
 
                 await actions.auth.signOut();

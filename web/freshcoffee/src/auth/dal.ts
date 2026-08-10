@@ -117,10 +117,6 @@ export async function verifySession(token: string) {
 
     }
 
-
-
-
-
     return {
         user: null
     };

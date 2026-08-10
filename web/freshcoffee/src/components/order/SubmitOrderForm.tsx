@@ -19,6 +19,16 @@ export default function SubmitOrderForm({
 
     const { order } = useOrderStore();
 
+    /*
+     * =============================================
+     * COMPROBAR MODO PRUEBA
+     * =============================================
+     */
+
+    const isTestOrder =
+        new URLSearchParams(window.location.search)
+            .get("testOrder") === "1";
+
     const [deliveryMethod, setDeliveryMethod] =
         useState<"pickup" | "delivery">("pickup");
 
@@ -41,29 +51,66 @@ export default function SubmitOrderForm({
             return;
         }
 
-        const form = e.target as HTMLFormElement;
-        const formData = new FormData(form);
+        const form =
+            e.target as HTMLFormElement;
 
-        const name =
-            formData.get("name")?.toString().trim() ?? "";
-
-        const phone =
-            formData.get("phone")?.toString().trim() ?? "";
-
-        const deliveryAddress =
-            formData.get("delivery_address")?.toString().trim() ?? "";
+        const formData =
+            new FormData(form);
 
         /*
-         * VALIDACIÓN DEL FORMULARIO
+         * =============================================
+         * DATOS DEL FORMULARIO
+         * =============================================
+         */
+
+        const name =
+            formData.get("name")
+                ?.toString()
+                .trim() ?? "";
+
+        const phone =
+            formData.get("phone")
+                ?.toString()
+                .trim() ?? "";
+
+        const deliveryAddress =
+            formData.get("delivery_address")
+                ?.toString()
+                .trim() ?? "";
+
+        /*
+         * En modo prueba el mismo campo "name"
+         * contiene el nombre del administrador.
+         */
+
+        const adminName =
+            isTestOrder
+                ? name
+                : "";
+
+        /*
+         * =============================================
+         * VALIDACIÓN
+         * =============================================
          */
 
         if (!name) {
-            toast.error("El nombre es obligatorio");
+
+            toast.error(
+                isTestOrder
+                    ? "El nombre del administrador es obligatorio"
+                    : "El nombre es obligatorio"
+            );
+
             return;
         }
 
         if (!phone) {
-            toast.error("El teléfono es obligatorio");
+
+            toast.error(
+                "El teléfono es obligatorio"
+            );
+
             return;
         }
 
@@ -71,16 +118,20 @@ export default function SubmitOrderForm({
             deliveryMethod === "delivery" &&
             !deliveryAddress
         ) {
+
             toast.error(
                 "La dirección de entrega es obligatoria"
             );
+
             return;
         }
 
         if (!order.length) {
+
             toast.error(
                 "No hay productos en el pedido"
             );
+
             return;
         }
 
@@ -95,10 +146,11 @@ export default function SubmitOrderForm({
          * PAGO CON TARJETA
          * =============================================
          *
-         * De momento solamente abrimos
-         * nuestro nuevo modal.
+         * Guardamos también si es un pedido de prueba
+         * y quién lo está realizando.
          *
-         * NO llamamos todavía a Redsys.
+         * RedsysReturnHandler utilizará estos datos
+         * cuando volvamos del pago.
          */
 
         if (paymentMethod === "card") {
@@ -110,11 +162,19 @@ export default function SubmitOrderForm({
                     phone,
                     deliveryMethod,
                     deliveryAddress,
-                    order
+                    order,
+
+                    isTestOrder,
+
+                    adminName:
+                        isTestOrder
+                            ? adminName
+                            : ""
                 })
             );
 
             setIsProcessing(false);
+
             setIsCardModalOpen(true);
 
             return;
@@ -124,22 +184,35 @@ export default function SubmitOrderForm({
          * =============================================
          * PAGO EN EFECTIVO
          * =============================================
-         *
-         * Este flujo no lo tocamos.
          */
 
         const { data, error } =
             await actions.orders.createOrder({
+
                 name,
+
                 phone,
+
                 deliveryMethod,
+
                 paymentMethod,
+
                 deliveryAddress,
-                order
+
+                order,
+
+                isTestOrder,
+
+                adminName:
+                    isTestOrder
+                        ? adminName
+                        : undefined
             });
 
         /*
-         * ERRORES DE VALIDACIÓN DE ASTRO ACTIONS
+         * =============================================
+         * ERRORES DE VALIDACIÓN
+         * =============================================
          */
 
         const inputErrors =
@@ -152,14 +225,20 @@ export default function SubmitOrderForm({
             setIsProcessing(false);
 
             inputErrors.forEach(error => {
-                toast.error(error.message);
+
+                toast.error(
+                    error.message
+                );
+
             });
 
             return;
         }
 
         /*
+         * =============================================
          * ERRORES DE LA ACTION
+         * =============================================
          */
 
         const actionError =
@@ -178,7 +257,9 @@ export default function SubmitOrderForm({
                 );
 
                 setTimeout(() => {
+
                     navigate("/");
+
                 }, 4000);
 
                 return;
@@ -191,34 +272,76 @@ export default function SubmitOrderForm({
                 );
 
                 setTimeout(() => {
+
                     navigate("/");
+
                 }, 4000);
 
                 return;
             }
 
-            toast.error(actionError);
+            toast.error(
+                actionError
+            );
 
             return;
         }
 
         /*
+         * =============================================
          * PEDIDO CREADO CORRECTAMENTE
+         * =============================================
          */
 
         if (data && !error) {
 
-            toast.success(data.message);
+            toast.success(
+                data.message
+            );
+
+            /*
+             * Vaciar el mismo carrito que utiliza
+             * el cliente.
+             */
 
             useOrderStore.setState({
+
                 order: [],
+
                 isOrderDrawerOpen: false
+
             });
+
+            /*
+             * =============================================
+             * PEDIDO DE PRUEBA
+             * =============================================
+             *
+             * El administrador mantiene su sesión.
+             */
+
+            if (isTestOrder) {
+
+                setIsProcessing(false);
+
+                return;
+            }
+
+            /*
+             * =============================================
+             * PEDIDO NORMAL
+             * =============================================
+             *
+             * Mantenemos exactamente el comportamiento
+             * que ya tenía el cliente.
+             */
 
             await actions.auth.signOut();
 
             setTimeout(() => {
+
                 navigate("/");
+
             }, 5000);
 
             return;
@@ -242,14 +365,21 @@ export default function SubmitOrderForm({
                             htmlFor="name"
                             className="font-bold text-lg"
                         >
-                            Tu Nombre:
+                            {isTestOrder
+                                ? "Administrador que realiza la prueba:"
+                                : "Tu Nombre:"
+                            }
                         </label>
 
                         <input
                             type="text"
                             id="name"
                             name="name"
-                            placeholder="Coloca tu Nombre"
+                            placeholder={
+                                isTestOrder
+                                    ? "Nombre del administrador"
+                                    : "Coloca tu Nombre"
+                            }
                             className="border border-gray-300 p-2 w-full rounded-xl"
                             required
                             disabled={isProcessing}
@@ -413,7 +543,9 @@ export default function SubmitOrderForm({
                             ? "Procesando..."
                             : paymentMethod === "card"
                                 ? "Pagar con tarjeta"
-                                : "Realizar Pedido"
+                                : isTestOrder
+                                    ? "Crear pedido de prueba"
+                                    : "Realizar Pedido"
                         }
                     </button>
 
@@ -423,7 +555,9 @@ export default function SubmitOrderForm({
 
             <RedsysCardModal
                 isOpen={isCardModalOpen}
-                onClose={() => setIsCardModalOpen(false)}
+                onClose={() =>
+                    setIsCardModalOpen(false)
+                }
             />
         </>
     );
