@@ -8,6 +8,7 @@ import { navigate } from "astro:transitions/client";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import RedsysCardModal from "@/components/ui/RedsysCardModal";
+import DeliveryMethod from "@/components/ui/DeliveryMethod";
 
 type SubmitOrderFormProps = {
     total: number
@@ -32,6 +33,9 @@ export default function SubmitOrderForm({
     const [deliveryMethod, setDeliveryMethod] =
         useState<"pickup" | "delivery">("pickup");
 
+    const [deliveryLocality, setDeliveryLocality] =
+    useState("");
+
     const [paymentMethod, setPaymentMethod] =
         useState<"cash" | "card">("cash");
 
@@ -40,6 +44,8 @@ export default function SubmitOrderForm({
 
     const [isCardModalOpen, setIsCardModalOpen] =
         useState(false);
+
+    
 
     const handleSubmit = async (
         e: React.FormEvent<HTMLFormElement>
@@ -161,6 +167,7 @@ export default function SubmitOrderForm({
                     name,
                     phone,
                     deliveryMethod,
+                    deliveryLocality,
                     deliveryAddress,
                     order,
 
@@ -196,6 +203,8 @@ export default function SubmitOrderForm({
                 deliveryMethod,
 
                 paymentMethod,
+
+                deliveryLocality,
 
                 deliveryAddress,
 
@@ -408,80 +417,12 @@ export default function SubmitOrderForm({
 
                     </div>
 
-                    <div className="space-y-3">
-
-                        <p className="font-bold text-lg">
-                            ¿Cómo quieres recibir tu pedido?
-                        </p>
-
-                        <label className="flex items-center gap-3 cursor-pointer">
-
-                            <input
-                                type="radio"
-                                name="delivery_method"
-                                value="pickup"
-                                checked={
-                                    deliveryMethod === "pickup"
-                                }
-                                onChange={() =>
-                                    setDeliveryMethod("pickup")
-                                }
-                                required
-                                disabled={isProcessing}
-                            />
-
-                            <span>
-                                Recoger en cafetería
-                            </span>
-
-                        </label>
-
-                        <label className="flex items-center gap-3 cursor-pointer">
-
-                            <input
-                                type="radio"
-                                name="delivery_method"
-                                value="delivery"
-                                checked={
-                                    deliveryMethod === "delivery"
-                                }
-                                onChange={() =>
-                                    setDeliveryMethod("delivery")
-                                }
-                                disabled={isProcessing}
-                            />
-
-                            <span>
-                                Reparto a domicilio
-                            </span>
-
-                        </label>
-
-                    </div>
-
-                    {deliveryMethod === "delivery" && (
-
-                        <div className="space-y-3">
-
-                            <label
-                                htmlFor="delivery_address"
-                                className="font-bold text-lg"
-                            >
-                                Dirección de entrega:
-                            </label>
-
-                            <textarea
-                                id="delivery_address"
-                                name="delivery_address"
-                                placeholder="Escribe tu dirección completa"
-                                className="border border-gray-300 p-2 w-full rounded-xl min-h-24"
-                                required
-                                disabled={isProcessing}
-                            />
-
-                        </div>
-
-                    )}
+                    <DeliveryMethod
+                        deliveryMethod={deliveryMethod}
+                        setDeliveryMethod={setDeliveryMethod}
+                        isProcessing={isProcessing}
+                        onLocalityChange={setDeliveryLocality}
+                    />
 
                     <div className="space-y-3">
 

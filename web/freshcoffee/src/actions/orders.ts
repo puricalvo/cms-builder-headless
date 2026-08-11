@@ -31,6 +31,8 @@ export const orders = {
                 "delivery"
             ]),
 
+            deliveryLocality: z.string(),
+
             paymentMethod: z.enum([
                 "cash",
                 "card"
@@ -196,6 +198,9 @@ export const orders = {
                         phone: input.phone,
                         deliveryMethod:
                             input.deliveryMethod,
+                        deliveryLocality:
+                            input.deliveryLocality,
+
                         paymentMethod:
                             input.paymentMethod,
                         deliveryAddress:

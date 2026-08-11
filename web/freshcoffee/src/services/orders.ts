@@ -6,6 +6,7 @@ type CreateOrderData = {
     name: string;
     phone: string;
     deliveryMethod: "pickup" | "delivery";
+    deliveryLocality: string;
     paymentMethod: "cash" | "card";
     deliveryAddress: string;
     order: OrderItem[];
@@ -33,6 +34,11 @@ export async function createOrder(
 
             delivery_method_order:
                 data.deliveryMethod,
+
+            locality_order:
+            data.deliveryMethod === "delivery"
+                ? data.deliveryLocality
+                : "",
 
             delivery_address_order:
                 data.deliveryMethod === "delivery"
