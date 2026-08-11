@@ -36,11 +36,6 @@ export default function RedsysReturnHandler() {
                  * =============================================
                  * DATOS DEL PEDIDO DE PRUEBA
                  * =============================================
-                 *
-                 * Estos datos solamente existen cuando el
-                 * administrador ha entrado mediante:
-                 *
-                 * /order/pricecafe?testOrder=1
                  */
 
                 const isTestOrder =
@@ -55,9 +50,6 @@ export default function RedsysReturnHandler() {
                  * =============================================
                  * CREAR PEDIDO
                  * =============================================
-                 *
-                 * El pedido se crea solamente después de
-                 * que Redsys haya autorizado el pago.
                  */
 
                 const { data, error } =
@@ -72,6 +64,9 @@ export default function RedsysReturnHandler() {
                         deliveryMethod:
                             orderData.deliveryMethod,
 
+                        deliveryLocality:
+                            orderData.deliveryLocality ?? "",
+
                         paymentMethod:
                             "card",
 
@@ -80,11 +75,6 @@ export default function RedsysReturnHandler() {
 
                         order:
                             orderData.order,
-
-                        /*
-                         * Si es prueba enviamos los datos.
-                         * Para un pedido normal será false.
-                         */
 
                         isTestOrder,
 
@@ -125,8 +115,7 @@ export default function RedsysReturnHandler() {
                 );
 
                 /*
-                 * Vaciar el mismo carrito que utiliza
-                 * el cliente.
+                 * Vaciar carrito
                  */
 
                 useOrderStore.setState({
@@ -153,9 +142,6 @@ export default function RedsysReturnHandler() {
                  * =============================================
                  * PEDIDO DE PRUEBA
                  * =============================================
-                 *
-                 * El administrador mantiene su sesión
-                 * y permanece en la página.
                  */
 
                 if (isTestOrder) {
@@ -167,15 +153,9 @@ export default function RedsysReturnHandler() {
                  * =============================================
                  * PEDIDO NORMAL
                  * =============================================
-                 *
-                 * Mantenemos el comportamiento anterior.
                  */
 
                 await actions.auth.signOut();
-
-                /*
-                 * Volver a inicio.
-                 */
 
                 setTimeout(() => {
 
