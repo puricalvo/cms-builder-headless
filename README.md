@@ -1,27 +1,43 @@
+# CMS Builder Headless
 
-# CMS Builder Community Edition
+Solución completa para cafeterías basada en una arquitectura desacoplada:
 
-CMS Builder Community Edition es un generador de aplicaciones CRUD desarrollado en PHP y MySQL que permite crear paneles de administración completos de forma visual, sin necesidad de programar cada módulo manualmente.
+**CMS Builder + API REST + Web + App de pedidos**
 
-El sistema genera automáticamente tablas, formularios, relaciones entre módulos y una API REST lista para consumir desde cualquier aplicación.
+El proyecto reúne un CMS para gestionar los contenidos y datos, una web pública desarrollada con Astro y una aplicación de pedidos desarrollada con Astro, React y Vue.
 
-Este repositorio contiene la base del CMS Builder y su evolución hacia una arquitectura **headless**, donde el CMS funciona como backend y diferentes aplicaciones frontend consumen su API.
+---
 
-## Proyecto principal
+## 📐 Arquitectura
 
-La versión principal del CMS se encuentra en:
+```text
+                         CMS Builder
+                              │
+                              │ API REST
+                              │
+                 ┌────────────┴────────────┐
+                 │                         │
+                 ▼                         ▼
+          CoffeeShopAstro             FreshCoffee
+            Web pública             App de pedidos
+                 │                         │
+                 └────────────┬────────────┘
+                              │
+                              ▼
+                         Base de datos
+```
 
-[CMS Builder en GitHub](https://github.com/puricalvo/cms-builder)
+La información configurable se gestiona desde **CMS Builder** y las aplicaciones frontend consumen esos datos mediante la API.
 
-## Arquitectura actual
+---
 
-El proyecto headless está dividido en dos partes principales:
+# 📁 Estructura del proyecto
 
 ```text
 cms-builder-headless/
 │
 ├── api/
-│   └── API REST desarrollada en PHP
+│   └── API REST del CMS
 │
 └── web/
     │
@@ -29,463 +45,1021 @@ cms-builder-headless/
     │   └── Web pública de la cafetería
     │
     └── freshcoffee/
-        └── Aplicación de pedidos y gestión
+        └── Aplicación de pedidos
 ```
 
-### API
+---
 
-La API proporciona acceso dinámico a las tablas creadas desde CMS Builder.
+# 🧩 CMS Builder
 
-Permite trabajar con:
+CMS Builder es el sistema encargado de gestionar la información utilizada por las aplicaciones.
 
-* GET
-* POST
-* PUT
-* DELETE
+Permite crear y administrar:
 
-Las operaciones se realizan de forma dinámica sobre las tablas generadas por el CMS, evitando tener que crear un endpoint específico para cada nueva tabla o módulo.
+- Páginas.
+- Tablas.
+- Módulos CRUD.
+- Formularios.
+- Relaciones.
+- Usuarios.
+- Administradores.
+- Editores.
+- Permisos.
+- Archivos multimedia.
+- Contenidos.
+- Productos.
+- Categorías.
+- Zonas de reparto.
+- Localidades.
+- Pedidos.
 
-## Tecnologías utilizadas
+El objetivo es que la gestión de los datos configurables se realice desde el CMS sin tener que modificar el código de las aplicaciones cada vez que se añade o cambia información.
 
-### CMS Builder / API
+---
 
-* PHP.
-* MySQL / MariaDB.
-* Composer.
-* Apache.
-* Arquitectura MVC.
-* API REST.
+# 🌐 API REST
 
-### CoffeeShopAstro
+CMS Builder proporciona una API REST para que las aplicaciones externas puedan consultar y modificar los datos del CMS.
 
-CoffeeShopAstro es la aplicación web pública de la cafetería.
+La API permite trabajar con:
 
-Está desarrollada utilizando:
+- `GET`
+- `POST`
+- `PUT`
+- `DELETE`
 
-* Astro.
-* TypeScript.
-* API REST de CMS Builder.
+Las tablas son dinámicas y pueden utilizarse desde los servicios de las aplicaciones sin tener que crear manualmente un endpoint específico para cada tabla.
 
-### FreshCoffee
+---
 
-FreshCoffee es la aplicación utilizada para realizar pedidos y gestionar los productos de la cafetería.
+# 📄 Páginas y tablas
 
-Está desarrollada utilizando:
+Las páginas se obtienen mediante la URL configurada en CMS Builder.
 
-* Astro.
-* React.
-* Vue.
-* Pinia.
-* TypeScript.
-* API REST de CMS Builder.
+Por ejemplo:
 
-Las dos aplicaciones frontend están desarrolladas utilizando **TypeScript**.
+```ts
+const page = await getPage("nosotros");
+```
 
-## CMS Builder
+o:
 
-CMS Builder permite crear visualmente:
+```ts
+const page = await getPage("repartos");
+```
 
-* Tablas.
-* Módulos CRUD.
-* Formularios.
-* Páginas.
-* Relaciones entre módulos.
-* Usuarios y administradores.
-* Configuración del dashboard.
-* Gestión de archivos multimedia.
+Las tablas no necesitan tener una URL propia.
 
-Las tablas creadas por el CMS utilizan una estructura dinámica basada en `suffix`, permitiendo que campos como:
+Cuando una página necesita información de una tabla independiente, se puede obtener directamente:
+
+```ts
+const content = await getTable("nosotros");
+```
+
+o:
+
+```ts
+const content = await getTable("repartos");
+```
+
+Esto permite separar:
 
 ```text
-id_<suffix>
-date_created_<suffix>
-date_updated_<suffix>
+URL de la página
+      ↓
+Página del CMS
+      ↓
+Tabla de datos
 ```
 
-se generen automáticamente para cada módulo.
+---
 
-## CoffeeShopAstro
+# 🏷️ Suffix de las tablas
 
-CoffeeShopAstro es la web pública de la cafetería.
+CMS Builder utiliza un `suffix` para identificar los campos pertenecientes a cada tabla.
 
-Está desarrollada con **Astro y TypeScript** y consume los datos directamente desde la API de **CMS Builder**.
+Por ejemplo, una tabla llamada:
 
-Entre las funcionalidades actuales se encuentran:
+```text
+repartos
+```
 
-* Página de inicio.
-* Información de la cafetería.
-* Blog.
-* Galería.
-* Menú.
-* Contacto.
-* Formulario de contacto y reservas.
-* Mapa de ubicación.
-* Acceso al sistema de pedidos.
-* Visualización dinámica de productos y categorías.
-* Enlace desde la cafetería al sistema de pedidos FreshCoffee.
+puede utilizar el suffix:
 
-## FreshCoffee
+```text
+reparto
+```
 
-FreshCoffee es la aplicación utilizada para realizar pedidos y gestionar los productos de la cafetería.
+y generar campos como:
 
-Está desarrollada con **Astro, React, Vue, Pinia y TypeScript** y consume los datos directamente desde la API de CMS Builder.
+```text
+id_reparto
+localidad_reparto
+cafeteria_reparto
+activa_reparto
+date_created_reparto
+date_updated_reparto
+```
 
-Además del sistema de pedidos para clientes, FreshCoffee incorpora un **panel de administración integrado** y un **panel de órdenes para mostrar los pedidos en un monitor dentro de la tienda**.
+Esto permite trabajar dinámicamente con diferentes tablas y módulos.
 
-### Sistema de pedidos para clientes
+---
 
-Actualmente permite:
+# 👥 Usuarios, administradores y editores
 
-* Registro de clientes.
-* Inicio de sesión.
-* Autenticación mediante token.
-* Carrito de compra.
-* Productos con precio único.
-* Productos con precios variables.
-* Selección de tamaños o variantes.
-* Cálculo de subtotales.
-* Cálculo del total.
-* Creación de pedidos.
-* Paginación de productos.
-* Gestión dinámica de categorías.
-* Gestión de imágenes mediante la API.
+CMS Builder permite separar las responsabilidades de los usuarios.
 
-### Panel de administración
+Los administradores pueden gestionar las funcionalidades para las que estén autorizados.
 
-FreshCoffee dispone de un panel de administración integrado en la propia aplicación.
+Los editores pueden recibir permisos específicos sobre determinadas páginas o contenidos.
 
-Desde este panel se pueden gestionar diferentes aspectos de la aplicación sin necesidad de acceder directamente al CMS Builder.
+Por ejemplo:
 
-Actualmente permite:
+```text
+Editor 1 → Página de cobros
+Editor 2 → Página de zonas de reparto
+Editor 3 → Otra página o contenido
+```
 
-* Gestionar productos.
-* Crear productos.
-* Editar productos.
-* Eliminar productos.
-* Gestionar productos por categorías.
-* Gestionar pedidos.
-* Consultar el estado de los pedidos.
-* Actualizar el estado de los pedidos.
+La gestión de usuarios, editores y permisos pertenece al CMS.
 
-El panel utiliza la misma API de CMS Builder para mantener sincronizada la información con la base de datos y el CMS.
+FreshCoffee no duplica estas responsabilidades.
 
-### Panel de órdenes
+---
 
-FreshCoffee también dispone de una página específica para utilizarse como **monitor de pedidos dentro de la tienda**.
+# ☕ CoffeeShopAstro
 
-Esta pantalla está pensada para permanecer visible en un monitor y mostrar los últimos pedidos completados, permitiendo que el personal de la cafetería y los clientes puedan consultar visualmente los pedidos que ya están preparados o completados.
+**CoffeeShopAstro** es la web pública de la cafetería.
 
-El panel de órdenes funciona de forma independiente del panel de administración y está pensado específicamente para su utilización como pantalla de información en el establecimiento.
+Está desarrollada con:
 
-## Sistema de pedidos
+- Astro.
+- TypeScript.
+- API REST.
 
-El sistema de pedidos utiliza autenticación mediante:
+La web obtiene sus contenidos desde CMS Builder.
+
+Entre sus funcionalidades se encuentran:
+
+- Página de inicio.
+- Páginas dinámicas.
+- Información de la cafetería.
+- Productos.
+- Categorías.
+- Blog.
+- Galería.
+- Contacto.
+- Reservas.
+- Información dinámica procedente del CMS.
+
+---
+
+# 🔗 Integración CoffeeShopAstro → FreshCoffee
+
+CoffeeShopAstro incorpora un botón de acceso directo a **FreshCoffee** para que el cliente pueda pasar de la web pública al sistema de pedidos.
+
+El flujo es:
+
+```text
+CoffeeShopAstro
+       ↓
+Realizar pedido
+       ↓
+FreshCoffee
+       ↓
+Productos
+       ↓
+Carrito
+       ↓
+Pedido
+```
+
+La web pública se encarga de presentar la cafetería y FreshCoffee de gestionar el proceso de compra.
+
+---
+
+# 🛒 FreshCoffee
+
+**FreshCoffee** es la aplicación utilizada para realizar pedidos y gestionar la operativa de la cafetería.
+
+Está desarrollada utilizando:
+
+- Astro.
+- React.
+- Vue.
+- TypeScript.
+- Zustand.
+- Pinia.
+- Tailwind CSS.
+- Headless UI.
+- Heroicons.
+- React Toastify.
+- Zod.
+
+La aplicación consume los datos de CMS Builder mediante la API REST.
+
+---
+
+# 🥐 Productos
+
+Los productos se obtienen dinámicamente desde CMS Builder.
+
+FreshCoffee permite trabajar con:
+
+- Categorías dinámicas.
+- Productos dinámicos.
+- Productos con precio único.
+- Productos con precios variables.
+- Tamaños.
+- Variantes.
+- Imágenes.
+- Paginación.
+
+Las categorías y tablas pueden modificarse desde CMS Builder sin tener que crear una nueva API específica.
+
+---
+
+# 🛍️ Carrito
+
+FreshCoffee dispone de un carrito completamente funcional.
+
+Permite:
+
+- Añadir productos.
+- Eliminar productos.
+- Aumentar cantidades.
+- Disminuir cantidades.
+- Cambiar tamaños.
+- Trabajar con precios variables.
+- Recalcular subtotales.
+- Calcular el total.
+
+El carrito utiliza almacenamiento local y Zustand.
+
+---
+
+# 🔐 Autenticación
+
+FreshCoffee utiliza el token:
 
 ```text
 FRESHCOFFEE_TOKEN
 ```
 
-Un cliente puede añadir productos al carrito sin estar autenticado.
+El token permite identificar la sesión del usuario.
 
-Sin embargo, para realizar el pedido es obligatorio estar registrado e iniciar sesión.
+Las acciones que requieren autenticación comprueban la existencia de una sesión válida.
 
-El flujo actual es:
+---
 
-```text
-Cliente
-   ↓
-Carrito
-   ↓
-Intentar realizar pedido
-   ↓
-¿Existe FRESHCOFFEE_TOKEN?
-   ↓
-   ├── NO → Solicitar registro/login
-   │
-   └── SÍ → Crear pedido
-              ↓
-           API REST
-              ↓
-          Base de datos
-              ↓
-        CMS / Panel
-```
+# 👤 Sesión de invitado
 
-El carrito permanece disponible mientras el cliente continúe utilizando el mismo navegador y almacenamiento local.
+FreshCoffee permite acceder como invitado.
 
-El carrito no se comparte entre diferentes navegadores o dispositivos.
+El invitado puede utilizar el carrito durante un periodo limitado.
 
-## Endpoint para peticiones externas
-
-El proyecto incorpora el endpoint:
+El control del tiempo utiliza almacenamiento local mediante:
 
 ```text
-externas.php
+freshcoffee-guest-started
 ```
 
-Este endpoint permite que las aplicaciones externas, como CoffeeShopAstro y FreshCoffee, puedan insertar, actualizar y eliminar información utilizando la API de forma controlada.
+Cuando finaliza el tiempo establecido, el carrito puede vaciarse automáticamente.
 
-Las operaciones externas:
+El invitado no puede completar un pedido normal sin disponer de una sesión válida.
 
-* Validan la API Key.
-* Validan el token del usuario cuando es necesario.
-* Comprueban que las columnas pertenecen a la tabla indicada.
-* Trabajan dinámicamente con cualquier tabla.
-* Generan automáticamente la fecha de creación utilizando el `suffix` de la tabla.
+---
 
-Por ejemplo, una tabla cuyo suffix sea:
+# 📦 Pedidos
+
+FreshCoffee permite crear pedidos y enviarlos al CMS mediante la API.
+
+Los pedidos almacenan información como:
+
+- Nombre.
+- Teléfono.
+- Forma de entrega.
+- Localidad.
+- Dirección.
+- Forma de pago.
+- Estado del pago.
+- Productos.
+- Total.
+- Estado del pedido.
+
+La dirección de entrega se almacena en:
 
 ```text
-cafe
+delivery_address_order
 ```
 
-puede utilizar automáticamente:
+---
+
+# 🚚 Formas de entrega
+
+Actualmente existen dos formas de entrega:
 
 ```text
-date_created_cafe
+pickup
+delivery
 ```
 
-sin necesidad de crear una lógica específica para esa tabla.
+## Recoger en cafetería
 
-## Productos
+El cliente puede seleccionar:
 
-Los productos se almacenan en tablas dinámicas creadas desde CMS Builder.
+> Recoger en cafetería
 
-Cada categoría puede tener su propia tabla y suffix.
+En este caso no se solicita una dirección de entrega.
 
-La aplicación obtiene dinámicamente:
+## Reparto a domicilio
 
-* Tabla.
-* Suffix.
-* Categoría.
-* Productos.
-* Precios.
-* Variantes.
+El cliente puede seleccionar:
 
-Esto permite añadir nuevas categorías desde el CMS sin tener que modificar la API.
+> Reparto a domicilio
 
-## Imágenes y archivos
+En este caso se solicita:
 
-Las imágenes se gestionan mediante el sistema de archivos del CMS.
+- Localidad.
+- Dirección de entrega.
 
-La API dispone de un endpoint de medios para recibir imágenes desde las aplicaciones externas.
+---
 
-Las imágenes se almacenan en la tabla `files` y en el sistema de archivos del CMS.
+# 📍 Zonas de reparto
 
-La eliminación de un producto no elimina automáticamente su imagen asociada, manteniendo el comportamiento actual del CMS.
+Las zonas de reparto se gestionan desde **CMS Builder**.
 
-## Seguridad
+FreshCoffee no contiene una gestión independiente de las zonas.
 
-Las variables sensibles se almacenan en archivos `.env` y no deben subirse al repositorio.
+La aplicación consulta las zonas mediante la API.
 
-La API utiliza API Key y autenticación mediante tokens para proteger las operaciones que requieren autorización.
-
-El cliente puede navegar y utilizar el carrito sin autenticarse, pero no puede crear un pedido sin disponer de un token válido.
-
-## Requisitos
-
-* PHP 8.1 o superior.
-* MySQL o MariaDB.
-* Composer.
-* Node.js.
-* npm.
-* Servidor Apache o Nginx.
-
-## Instalación
-
-### CMS / API
-
-1. Clona o descarga el proyecto.
-2. Instala las dependencias de Composer:
-
-```bash
-composer install
-```
-
-3. Copia:
+La tabla utilizada actualmente es:
 
 ```text
-.env.template
+repartos
 ```
 
-como:
+con campos como:
 
 ```text
-.env
+id_reparto
+localidad_reparto
+cafeteria_reparto
+activa_reparto
+date_created_reparto
+date_updated_reparto
 ```
 
-4. Configura las variables de entorno.
-5. Crea la base de datos.
-6. Configura Apache o Nginx.
-7. Accede al instalador desde el navegador.
-
-Durante la instalación se crearán automáticamente las estructuras iniciales del CMS.
-
-### Aplicaciones frontend
-
-Las aplicaciones frontend se encuentran dentro de la carpeta `web`:
+El campo:
 
 ```text
-web/
-├── coffeeastro/
-└── freshcoffee/
+activa_reparto
 ```
 
-Para cada aplicación, instala las dependencias de Node:
+determina si una zona está disponible.
 
-```bash
-npm install
-```
-
-Después configura las variables de entorno necesarias para conectar con la API.
-
-## Variables de entorno
-
-Los archivos `.env` contienen información sensible y están excluidos del repositorio mediante `.gitignore`.
-
-El proyecto utiliza archivos de ejemplo como:
+En la base de datos un valor activo puede aparecer como:
 
 ```text
-.env.template
-.env.example
+1
 ```
 
-para documentar las variables necesarias sin almacenar credenciales reales.
-
-## Estructura general
+mientras que en CMS Builder se representa como:
 
 ```text
-cms-builder-headless/
-│
-├── api/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── views/
-│   └── index.php
-│
-└── web/
-    │
-    ├── coffeeastro/
-    │   ├── src/
-    │   ├── public/
-    │   └── package.json
-    │
-    └── freshcoffee/
-        ├── src/
-        ├── public/
-        └── package.json
+true
 ```
 
-## API REST
+La aplicación muestra únicamente las zonas activas.
 
-Todos los módulos creados desde el dashboard generan automáticamente sus correspondientes endpoints REST.
+---
 
-La API permite realizar operaciones:
+# 🏘️ Localidades de reparto
 
-* GET
-* POST
-* PUT
-* DELETE
+Cuando el cliente selecciona **Reparto a domicilio**, FreshCoffee muestra las localidades disponibles obtenidas desde CMS Builder.
 
-sin necesidad de escribir código adicional para cada tabla.
+El cliente selecciona su localidad y posteriormente introduce la dirección completa.
 
-Las aplicaciones frontend consumen estos endpoints mediante servicios centralizados.
+Ejemplo:
 
-## ChatGPT
+```text
+Localidad:
+Sevilla
 
-CMS Builder permite integrar ChatGPT dentro de cualquier módulo mediante campos dinámicos.
+Dirección:
+Calle Ejemplo, 25, 2ºB
+```
 
-Para utilizar esta funcionalidad es necesario configurar las credenciales de OpenAI desde el panel de administración.
+La información se guarda junto al pedido.
 
-## Personalización
+---
 
-El dashboard permite configurar:
+# 📋 Estados de los pedidos
 
-* Nombre del proyecto.
-* Símbolo.
-* Color principal.
-* Tipografía.
-* Imagen de fondo del login.
+Los pedidos utilizan actualmente los siguientes estados:
 
-## Estado actual del proyecto
+```text
+pending
+preparing
+completed
+cancelled
+```
 
-### Punto estable antes de la integración de pagos
+La forma de entrega no es un estado.
 
-El proyecto se encuentra actualmente en un punto estable previo a la integración del sistema de pagos.
+Por ejemplo:
 
-Funcionando actualmente:
+```text
+Reparto + Pendiente
+Reparto + Preparando
+Reparto + Completado
+```
 
-* CMS Builder.
-* API REST.
-* API externa dinámica.
-* Registro de clientes.
-* Login.
-* Autenticación mediante token.
-* Carrito de compra.
-* Productos variables.
-* Categorías dinámicas.
-* Creación de productos.
-* Edición de productos.
-* Eliminación de productos.
-* Creación de pedidos.
-* Fechas de creación automáticas.
-* Subida de imágenes.
-* Panel de administración integrado en FreshCoffee.
-* Gestión de productos desde FreshCoffee.
-* Gestión de pedidos desde FreshCoffee.
-* Panel de órdenes para monitor de la tienda.
-* Paginación.
-* Integración CoffeeShopAstro → FreshCoffee.
-* Validación de autenticación antes de crear pedidos.
+o:
 
-## Próximas funcionalidades
+```text
+Recogida + Pendiente
+Recogida + Preparando
+Recogida + Completado
+```
 
-El siguiente objetivo del proyecto es integrar un sistema completo de pedidos con:
+---
 
-* Pago mediante Redsys.
-* Confirmación del pago antes de crear el pedido.
-* Reparto a domicilio.
-* Restricción de zonas de reparto.
-* Costes de reparto.
-* Gestión del estado del pedido.
-* Confirmación automática de los pagos.
+# 💳 Estados del pago
 
-El pedido definitivo deberá crearse únicamente después de recibir la confirmación válida del pago.
+El estado del pago se gestiona independientemente del estado del pedido.
 
-El flujo previsto será:
+Por ejemplo:
+
+```text
+payment_status_order = paid
+status_order = pending
+```
+
+significa que:
+
+- El pago ya se ha realizado.
+- El pedido todavía está pendiente de preparación.
+
+---
+
+# 💵 Pago en efectivo
+
+FreshCoffee permite realizar pedidos mediante:
+
+```text
+cash
+```
+
+En este caso el pedido se crea con el estado de pago correspondiente a un pago pendiente.
+
+---
+
+# 💳 Redsys
+
+FreshCoffee incorpora integración con **Redsys** para realizar pagos mediante tarjeta.
+
+El flujo es:
 
 ```text
 Carrito
    ↓
 Datos del cliente
    ↓
-Tipo de entrega
+Forma de entrega
    ↓
-Dirección / zona de reparto
+Resumen del pedido
    ↓
 Redsys
    ↓
-Pago confirmado
+Pago
    ↓
-Crear pedido
+Retorno a FreshCoffee
    ↓
-Base de datos
+Creación del pedido
    ↓
-CMS / Panel de administración
+CMS Builder
 ```
 
-Si el pago es rechazado o cancelado, el pedido no deberá crearse.
+El pedido definitivo se crea después de que Redsys haya autorizado el pago.
 
-## Licencia
+---
 
-CMS Builder Community Edition se distribuye para fines educativos y de desarrollo.
+# 🔄 Retorno de Redsys
 
-Puedes modificarlo y adaptarlo a tus propios proyectos respetando las condiciones de la licencia correspondiente.
+Después del pago, Redsys devuelve al usuario a:
 
-## Autor
+```text
+/order/pricecafe
+```
+
+FreshCoffee conserva temporalmente los datos necesarios del pedido mediante:
+
+```text
+sessionStorage
+```
+
+utilizando:
+
+```text
+pending_order
+```
+
+El proceso es:
+
+```text
+Pago autorizado
+       ↓
+FreshCoffee
+       ↓
+Crear pedido
+       ↓
+Vaciar carrito
+       ↓
+Mostrar confirmación
+```
+
+Si el pago se ha realizado pero la creación del pedido falla, la aplicación informa al usuario de que el pago ha sido realizado pero el pedido no ha podido completarse.
+
+---
+
+# 🧪 Pedidos de prueba
+
+FreshCoffee dispone de un sistema de pedidos de prueba para administradores.
+
+El acceso se realiza desde:
+
+```text
+/admin/test-orders
+```
+
+El administrador puede acceder al carrito mediante:
+
+```text
+/order/pricecafe?testOrder=1
+```
+
+Los pedidos de prueba permiten comprobar:
+
+- Productos.
+- Carrito.
+- Formas de entrega.
+- Localidades.
+- Dirección.
+- Pago.
+- Creación del pedido.
+- Integración con CMS Builder.
+- Funcionamiento del panel administrativo.
+- Integración con Redsys.
+
+---
+
+# 🔧 Modo de prueba del administrador
+
+El estado del modo de prueba se conserva mediante `sessionStorage` utilizando:
+
+```text
+freshcoffee-admin-test-order
+```
+
+Esto permite navegar entre diferentes categorías durante el pedido de prueba.
+
+Por ejemplo:
+
+```text
+/order/pricecafe?testOrder=1
+        ↓
+/order/pizzas
+        ↓
+/order/postres
+```
+
+El modo de prueba continúa activo durante la navegación.
+
+Al volver al panel se elimina únicamente la marca del modo de prueba.
+
+La sesión del administrador permanece activa.
+
+---
+
+# ↩️ Volver al panel de administración
+
+Durante un pedido de prueba aparece el botón:
+
+> ← Volver al panel
+
+El botón vuelve a:
+
+```text
+/admin/test-orders
+```
+
+El botón elimina únicamente:
+
+```text
+freshcoffee-admin-test-order
+```
+
+No elimina:
+
+```text
+FRESHCOFFEE_TOKEN
+```
+
+Por tanto, el administrador conserva su sesión.
+
+---
+
+# 🖥️ Panel de administración
+
+FreshCoffee dispone de un panel de administración para las funcionalidades propias de la aplicación.
+
+Permite trabajar con:
+
+- Productos.
+- Categorías.
+- Creación de productos.
+- Edición de productos.
+- Eliminación de productos.
+- Pedidos.
+- Estados de pedidos.
+- Información de clientes.
+- Información de entrega.
+- Información de pago.
+- Pedidos de prueba.
+
+La gestión general de contenidos y configuración pertenece a CMS Builder.
+
+---
+
+# 🧾 Panel de pedidos
+
+FreshCoffee dispone de una pantalla específica para consultar los pedidos de la cafetería.
+
+Permite trabajar con los pedidos y sus estados:
+
+```text
+Pendiente
+Preparando
+Completado
+Cancelado
+```
+
+La información procede del CMS mediante la API REST.
+
+---
+
+# 🖼️ Gestión de imágenes
+
+FreshCoffee utiliza la API de CMS Builder para gestionar las imágenes.
+
+El sistema dispone de un endpoint específico para recibir imágenes.
+
+Las aplicaciones frontend no necesitan acceder directamente a la base de datos.
+
+---
+
+# 🧱 Servicios frontend
+
+FreshCoffee centraliza la comunicación con la API mediante servicios.
+
+Entre ellos se encuentran:
+
+```text
+services/
+├── api.ts
+├── pages.ts
+├── orders.ts
+├── test-orders.ts
+└── upload.ts
+```
+
+Esto permite mantener separada la comunicación con la API de los componentes de interfaz.
+
+---
+
+# 🔒 Seguridad
+
+Las credenciales y claves sensibles se almacenan mediante variables de entorno.
+
+No deben incluirse credenciales reales dentro del repositorio.
+
+El sistema utiliza:
+
+- API Keys.
+- Tokens.
+- Sesiones.
+- Validación de permisos.
+- Validación de acciones.
+
+---
+
+# ⚙️ Variables de entorno
+
+Las aplicaciones utilizan variables de entorno para configurar la conexión con la API.
+
+Los archivos `.env` no deben subirse al repositorio.
+
+Se deben utilizar archivos de ejemplo para documentar las variables necesarias.
+
+---
+
+# 🛠️ Tecnologías
+
+## CMS / API
+
+- PHP.
+- MySQL.
+- MariaDB.
+- Apache.
+- Composer.
+- API REST.
+
+## CoffeeShopAstro
+
+- Astro.
+- TypeScript.
+
+## FreshCoffee
+
+- Astro.
+- React.
+- Vue.
+- TypeScript.
+- Zustand.
+- Pinia.
+- Tailwind CSS.
+- Headless UI.
+- Heroicons.
+- React Toastify.
+- Zod.
+
+## Pagos
+
+- Redsys.
+
+---
+
+# 💻 Instalación
+
+## API
+
+Instalar las dependencias PHP:
+
+```bash
+composer install
+```
+
+Configurar las variables de entorno y la conexión con la base de datos.
+
+Configurar Apache o el servidor web correspondiente.
+
+---
+
+## CoffeeShopAstro
+
+Entrar en:
+
+```text
+web/coffeeastro
+```
+
+Instalar las dependencias:
+
+```bash
+npm install
+```
+
+Configurar las variables de entorno necesarias.
+
+Iniciar el entorno de desarrollo:
+
+```bash
+npm run dev
+```
+
+---
+
+## FreshCoffee
+
+Entrar en:
+
+```text
+web/freshcoffee
+```
+
+Instalar las dependencias:
+
+```bash
+npm install
+```
+
+Configurar las variables de entorno necesarias.
+
+Iniciar el entorno de desarrollo:
+
+```bash
+npm run dev
+```
+
+---
+
+# 🖥️ Desarrollo local
+
+El proyecto se ha desarrollado utilizando un entorno local basado en XAMPP.
+
+La estructura local principal es:
+
+```text
+C:\xampp\htdocs\cms-builder-headless
+```
+
+La API y las aplicaciones frontend se ejecutan de forma independiente y se comunican mediante HTTP.
+
+---
+
+# 🔄 Flujo completo del sistema
+
+```text
+                         CMS Builder
+                              │
+                              │
+                          API REST
+                              │
+              ┌───────────────┴───────────────┐
+              │                               │
+              ▼                               ▼
+       CoffeeShopAstro                    FreshCoffee
+              │                               │
+              │                               ▼
+              │                           Productos
+              │                               │
+              │                               ▼
+              │                             Carrito
+              │                               │
+              │                               ▼
+              │                         Datos cliente
+              │                               │
+              │                               ▼
+              │                        Entrega / Pago
+              │                               │
+              │                    ┌──────────┴──────────┐
+              │                    │                     │
+              │                    ▼                     ▼
+              │                 Efectivo              Redsys
+              │                    │                     │
+              │                    └──────────┬──────────┘
+              │                               ▼
+              │                         Crear pedido
+              │                               │
+              └───────────────────────────────┤
+                                              ▼
+                                        CMS Builder
+                                              │
+                                              ▼
+                                    Panel administrativo
+```
+
+---
+
+# 🧠 Separación de responsabilidades
+
+El proyecto mantiene una separación clara entre CMS, web y aplicación.
+
+### CMS Builder
+
+Gestiona:
+
+- Datos.
+- Contenidos.
+- Páginas.
+- Tablas.
+- Módulos.
+- Usuarios.
+- Administradores.
+- Editores.
+- Permisos.
+- Configuración.
+- Zonas de reparto.
+- Localidades.
+- Información gestionable.
+
+### CoffeeShopAstro
+
+Gestiona:
+
+- Presentación pública.
+- Contenido.
+- Navegación.
+- Información de la cafetería.
+- Acceso a FreshCoffee.
+
+### FreshCoffee
+
+Gestiona:
+
+- Productos.
+- Carrito.
+- Clientes.
+- Pedidos.
+- Entrega.
+- Pago.
+- Operativa de la cafetería.
+- Panel de administración de la aplicación.
+
+La aplicación no duplica responsabilidades que ya pertenecen al CMS.
+
+---
+
+# 📦 Arquitectura comercial
+
+El proyecto está pensado como una solución completa:
+
+```text
+┌───────────────────────────┐
+│        CMS Builder        │
+│ Gestión y administración  │
+└─────────────┬─────────────┘
+              │
+              ▼
+┌───────────────────────────┐
+│       CoffeeShopAstro     │
+│        Web pública        │
+└─────────────┬─────────────┘
+              │
+              ▼
+┌───────────────────────────┐
+│        FreshCoffee        │
+│     App de pedidos        │
+└───────────────────────────┘
+```
+
+Esto permite ofrecer el conjunto como un paquete:
+
+**CMS + Web + App**
+
+manteniendo las responsabilidades separadas y reutilizando la misma arquitectura para diferentes cafeterías y negocios.
+
+---
+
+# 🚀 Escalabilidad
+
+El sistema está diseñado para poder ampliarse desde CMS Builder.
+
+Por ejemplo:
+
+- Nuevas categorías.
+- Nuevos productos.
+- Nuevas localidades.
+- Nuevas zonas de reparto.
+- Nuevas cafeterías.
+- Nuevos contenidos.
+- Nuevos módulos.
+- Nuevos editores.
+- Nuevas aplicaciones frontend.
+
+La incorporación de información configurable no requiere necesariamente modificar el código de FreshCoffee o CoffeeShopAstro.
+
+---
+
+# 🎯 Objetivo del proyecto
+
+El objetivo es disponer de una plataforma completa y reutilizable para cafeterías y otros negocios que necesiten:
+
+```text
+CMS
++
+API REST
++
+Web pública
++
+Aplicación de pedidos
++
+Panel administrativo
++
+Pagos
+```
+
+con una arquitectura desacoplada, dinámica y preparada para crecer.
+
+---
+
+# 🔗 Repositorios
+
+## CMS Builder
+
+https://github.com/puricalvo/cms-builder
+
+## CMS Builder Headless
+
+https://github.com/puricalvo/cms-builder-headless
+
+---
+
+# 👩‍💻 Autor
 
 Desarrollado por **Puri Calvo**.
 
-Proyecto creado para facilitar el desarrollo rápido de aplicaciones administrativas mediante una arquitectura visual basada en PHP, MySQL y API REST.
+Arquitectura basada en:
 
+**CMS + API + Web + App**
