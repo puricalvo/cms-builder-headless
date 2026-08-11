@@ -12,35 +12,28 @@ export default function SignOutButton() {
 
     useEffect(() => {
 
-        const checkSession = async () => {
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
 
-            /*
-             * Si estamos en modo prueba de administrador,
-             * este botón no debe aparecer.
-             */
+        const isTestOrderFromUrl =
+            params.get("testOrder") === "1";
 
-            const isAdminTestOrder =
-                sessionStorage.getItem(
-                    "freshcoffee-admin-test-order"
-                ) === "true";
+        const isAdminTestOrder =
+            sessionStorage.getItem(
+                "freshcoffee-admin-test-order"
+            ) === "true";
 
-            if (isAdminTestOrder) {
-                setVisible(false);
-                return;
-            }
+        if (
+            isTestOrderFromUrl ||
+            isAdminTestOrder
+        ) {
+            setVisible(false);
+            return;
+        }
 
-            /*
-             * Si no estamos en modo prueba,
-             * mostramos el botón.
-             *
-             * Tanto cliente como invitado utilizan
-             * FRESHCOFFEE_TOKEN.
-             */
-
-            setVisible(true);
-        };
-
-        checkSession();
+        setVisible(true);
 
     }, []);
 
