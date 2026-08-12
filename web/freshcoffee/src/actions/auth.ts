@@ -49,6 +49,18 @@ export const auth = {
         }
     }),
 
+    isGuestSession: defineAction({
+
+        handler: async (_, ctx) => {
+
+            const token =
+                ctx.cookies.get("FRESHCOFFEE_TOKEN")?.value;
+
+            return token === "INVITADO";
+        }
+
+    }),
+
     register: defineAction({
 
     accept: "form",

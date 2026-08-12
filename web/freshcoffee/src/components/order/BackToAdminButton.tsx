@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useOrderStore } from "@/stores/order";
 
 const ADMIN_TEST_ORDER_KEY =
     "freshcoffee-admin-test-order";
@@ -42,9 +43,29 @@ export default function BackToAdminButton() {
     const handleBackToAdmin = () => {
 
         /*
-         * Cerramos SOLO el modo de pedido de prueba.
+         * ==========================================
+         * VACIAR CARRITO DEL PEDIDO DE PRUEBA
+         * ==========================================
+         *
+         * El carrito está guardado en Zustand/persist,
+         * por lo que debemos vaciarlo explícitamente.
+         */
+
+        useOrderStore.setState({
+
+            order: [],
+
+            isOrderDrawerOpen: false
+
+        });
+
+        /*
+         * ==========================================
+         * CERRAR MODO PEDIDO DE PRUEBA
+         * ==========================================
          *
          * NO tocamos FRESHCOFFEE_TOKEN.
+         *
          * La sesión del administrador permanece activa.
          */
 
@@ -52,8 +73,13 @@ export default function BackToAdminButton() {
             ADMIN_TEST_ORDER_KEY
         );
 
+        /*
+         * Volvemos al panel de pedidos de prueba.
+         */
+
         window.location.href =
             "/admin/test-orders";
+
     };
 
     if (!isTestOrder) {

@@ -1,6 +1,7 @@
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
 import { useEffect, useState } from "react";
+import { useOrderStore } from "@/stores/order";
 
 export default function SignOutButton() {
 
@@ -46,7 +47,25 @@ export default function SignOutButton() {
         setIsProcessing(true);
 
         /*
-         * Cerramos la sesión actual.
+         * =============================================
+         * VACIAR CARRITO
+         * =============================================
+         *
+         * El carrito se elimina tanto si la sesión
+         * pertenece a un cliente como si es invitado.
+         *
+         * NO tocamos ninguna clave del contador.
+         */
+
+        useOrderStore.setState({
+            order: [],
+            isOrderDrawerOpen: false
+        });
+
+        /*
+         * =============================================
+         * CERRAR SESIÓN
+         * =============================================
          *
          * Esto elimina FRESHCOFFEE_TOKEN.
          */
@@ -54,25 +73,9 @@ export default function SignOutButton() {
         await actions.auth.signOut();
 
         /*
-         * Si era invitado, también eliminamos
-         * el inicio del contador.
-         */
-
-        localStorage.removeItem(
-            "freshcoffee-guest-started"
-        );
-
-        /*
-         * Eliminamos también la marca de invitado
-         * expirado, si existiera.
-         */
-
-        localStorage.removeItem(
-            "freshcoffee-guest-expired"
-        );
-
-        /*
-         * Volvemos al inicio.
+         * =============================================
+         * VOLVER AL INICIO
+         * =============================================
          */
 
         navigate("/");

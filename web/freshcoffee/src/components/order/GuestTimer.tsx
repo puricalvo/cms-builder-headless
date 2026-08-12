@@ -13,92 +13,180 @@ export default function GuestTimer() {
 
     useEffect(() => {
 
-        const started =
-            localStorage.getItem(
-                "freshcoffee-guest-started"
-            );
+        let interval: ReturnType<typeof setInterval> | null = null;
 
-        if (!started) {
-            return;
-        }
+        const checkGuestSession = async () => {
 
-        const startedAt =
-            Number(started);
+            /*
+             * ==========================================
+             * COMPROBAR SI REALMENTE SOMOS INVITADO
+             * ==========================================
+             *
+             * FRESHCOFFEE_TOKEN es httpOnly, por lo que
+             * no podemos leerlo directamente desde React.
+             *
+             * La action lo comprueba en el servidor.
+             */
 
-        const updateTimer = async () => {
+            const {
+                data,
+                error
+            } = await actions.auth.isGuestSession();
 
-            const elapsed =
-                Date.now() - startedAt;
-
-            const timeLeft =
-                GUEST_TIME - elapsed;
-
-            if (timeLeft <= 0) {
-
-                setRemaining(0);
+            if (error || data !== true) {
 
                 /*
-                 * ==============================
-                 * TIEMPO AGOTADO
-                 * ==============================
-                 *
-                 * Vaciamos el carrito y lo cerramos.
+                 * Si no somos invitado, no mostramos
+                 * el contador aunque exista todavía
+                 * freshcoffee-guest-started.
                  */
 
-                useOrderStore.setState({
-                    order: [],
-                    isOrderDrawerOpen: false
-                });
-
-                localStorage.removeItem(
-                    "freshcoffee-guest-started"
-                );
-
-                /*
-                 * Cerramos la sesión de invitado
-                 * y eliminamos FRESHCOFFEE_TOKEN.
-                 */
-
-                await actions.auth.signOutGuest();
-
-                /*
-                 * Avisamos a la página de inicio
-                 * de que el tiempo ha terminado.
-                 */
-
-                localStorage.setItem(
-                    "freshcoffee-guest-expired",
-                    "true"
-                );
-
-                navigate("/");
+                setRemaining(null);
 
                 return;
             }
 
-            setRemaining(timeLeft);
+            /*
+             * ==========================================
+             * RECUPERAR INICIO DEL CONTADOR
+             * ==========================================
+             */
+
+            const started =
+                localStorage.getItem(
+                    "freshcoffee-guest-started"
+                );
+
+            if (!started) {
+
+                setRemaining(null);
+
+                return;
+            }
+
+            const startedAt =
+                Number(started);
+
+            if (!Number.isFinite(startedAt)) {
+
+                setRemaining(null);
+
+                return;
+            }
+
+            /*
+             * ==========================================
+             * ACTUALIZAR CONTADOR
+             * ==========================================
+             */
+
+            const updateTimer = async () => {
+
+                const elapsed =
+                    Date.now() - startedAt;
+
+                const timeLeft =
+                    GUEST_TIME - elapsed;
+
+                if (timeLeft <= 0) {
+
+                    setRemaining(0);
+
+                    /*
+                     * ==============================
+                     * TIEMPO AGOTADO
+                     * ==============================
+                     *
+                     * Vaciamos el carrito y lo cerramos.
+                     */
+
+                    useOrderStore.setState({
+
+                        order: [],
+
+                        isOrderDrawerOpen: false
+
+                    });
+
+                    localStorage.removeItem(
+                        "freshcoffee-guest-started"
+                    );
+
+                    /*
+                     * Cerramos la sesión de invitado.
+                     */
+
+                    await actions.auth.signOutGuest();
+
+                    /*
+                     * Avisamos a la página de inicio
+                     * de que el tiempo ha terminado.
+                     */
+
+                    localStorage.setItem(
+                        "freshcoffee-guest-expired",
+                        "true"
+                    );
+
+                    if (interval) {
+                        clearInterval(interval);
+                    }
+
+                    navigate("/");
+
+                    return;
+                }
+
+                setRemaining(timeLeft);
+            };
+
+            /*
+             * Primera comprobación inmediata.
+             */
+
+            await updateTimer();
+
+            /*
+             * Después actualizamos cada segundo.
+             */
+
+            interval =
+                setInterval(
+                    updateTimer,
+                    1000
+                );
         };
 
-        updateTimer();
-
-        const interval =
-            setInterval(updateTimer, 1000);
+        checkGuestSession();
 
         return () => {
-            clearInterval(interval);
+
+            if (interval) {
+                clearInterval(interval);
+            }
+
         };
 
     }, []);
+
+    /*
+     * Si no somos invitado, o no existe contador,
+     * no mostramos absolutamente nada.
+     */
 
     if (remaining === null) {
         return null;
     }
 
     const totalSeconds =
-        Math.ceil(remaining / 1000);
+        Math.ceil(
+            remaining / 1000
+        );
 
     const minutes =
-        Math.floor(totalSeconds / 60);
+        Math.floor(
+            totalSeconds / 60
+        );
 
     const seconds =
         totalSeconds % 60;
@@ -108,8 +196,9 @@ export default function GuestTimer() {
             className="flex items-center gap-2 font-bold text-lg"
             title="Tiempo disponible como invitado"
         >
+
             <ClockIcon
-                className="h-8 w-8 "
+                className="h-8 w-8"
                 aria-hidden="true"
             />
 
@@ -117,6 +206,7 @@ export default function GuestTimer() {
                 {String(minutes).padStart(2, "0")}:
                 {String(seconds).padStart(2, "0")}
             </span>
+
         </div>
     );
 }
