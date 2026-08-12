@@ -11,8 +11,11 @@ import RedsysCardModal from "@/components/ui/RedsysCardModal";
 import DeliveryMethod from "@/components/ui/DeliveryMethod";
 
 type SubmitOrderFormProps = {
-    total: number
-}
+    total: number;
+};
+
+const ADMIN_TEST_ORDER_KEY =
+    "freshcoffee-admin-test-order";
 
 export default function SubmitOrderForm({
     total
@@ -24,17 +27,44 @@ export default function SubmitOrderForm({
      * =============================================
      * COMPROBAR MODO PRUEBA
      * =============================================
+     *
+     * El modo prueba puede venir de:
+     *
+     * 1. ?testOrder=1
+     * 2. sessionStorage
+     *
+     * De esta forma el modo prueba se mantiene aunque
+     * el administrador navegue entre categorías.
      */
 
     const isTestOrder =
         new URLSearchParams(window.location.search)
-            .get("testOrder") === "1";
+            .get("testOrder") === "1" ||
+        sessionStorage.getItem(
+            ADMIN_TEST_ORDER_KEY
+        ) === "true";
+
+    /*
+     * Si hemos entrado directamente mediante
+     * ?testOrder=1, guardamos el modo prueba para
+     * mantenerlo durante toda la navegación.
+     */
+
+    if (
+        new URLSearchParams(window.location.search)
+            .get("testOrder") === "1"
+    ) {
+        sessionStorage.setItem(
+            ADMIN_TEST_ORDER_KEY,
+            "true"
+        );
+    }
 
     const [deliveryMethod, setDeliveryMethod] =
         useState<"pickup" | "delivery">("pickup");
 
     const [deliveryLocality, setDeliveryLocality] =
-    useState("");
+        useState("");
 
     const [paymentMethod, setPaymentMethod] =
         useState<"cash" | "card">("cash");
@@ -45,7 +75,6 @@ export default function SubmitOrderForm({
     const [isCardModalOpen, setIsCardModalOpen] =
         useState(false);
 
-    
 
     const handleSubmit = async (
         e: React.FormEvent<HTMLFormElement>
@@ -94,6 +123,7 @@ export default function SubmitOrderForm({
                 ? name
                 : "";
 
+
         /*
          * =============================================
          * VALIDACIÓN
@@ -115,6 +145,18 @@ export default function SubmitOrderForm({
 
             toast.error(
                 "El teléfono es obligatorio"
+            );
+
+            return;
+        }
+
+        if (
+            deliveryMethod === "delivery" &&
+            !deliveryLocality
+        ) {
+
+            toast.error(
+                "La localidad de entrega es obligatoria"
             );
 
             return;
@@ -147,16 +189,15 @@ export default function SubmitOrderForm({
 
         setIsProcessing(true);
 
+
         /*
          * =============================================
          * PAGO CON TARJETA
          * =============================================
          *
-         * Guardamos también si es un pedido de prueba
-         * y quién lo está realizando.
-         *
-         * RedsysReturnHandler utilizará estos datos
-         * cuando volvamos del pago.
+         * Guardamos también el modo prueba para que
+         * RedsysReturnHandler pueda crear el pedido
+         * correcto al volver del pago.
          */
 
         if (paymentMethod === "card") {
@@ -164,12 +205,20 @@ export default function SubmitOrderForm({
             sessionStorage.setItem(
                 "pending_order",
                 JSON.stringify({
+
                     name,
+
                     phone,
+
                     deliveryMethod,
+
                     deliveryLocality,
+
                     deliveryAddress,
+
                     order,
+
+                    total,
 
                     isTestOrder,
 
@@ -187,6 +236,7 @@ export default function SubmitOrderForm({
             return;
         }
 
+
         /*
          * =============================================
          * PAGO EN EFECTIVO
@@ -202,9 +252,9 @@ export default function SubmitOrderForm({
 
                 deliveryMethod,
 
-                paymentMethod,
-
                 deliveryLocality,
+
+                paymentMethod,
 
                 deliveryAddress,
 
@@ -217,6 +267,7 @@ export default function SubmitOrderForm({
                         ? adminName
                         : undefined
             });
+
 
         /*
          * =============================================
@@ -243,6 +294,7 @@ export default function SubmitOrderForm({
 
             return;
         }
+
 
         /*
          * =============================================
@@ -296,6 +348,7 @@ export default function SubmitOrderForm({
             return;
         }
 
+
         /*
          * =============================================
          * PEDIDO CREADO CORRECTAMENTE
@@ -309,8 +362,7 @@ export default function SubmitOrderForm({
             );
 
             /*
-             * Vaciar el mismo carrito que utiliza
-             * el cliente.
+             * Vaciar carrito.
              */
 
             useOrderStore.setState({
@@ -320,6 +372,7 @@ export default function SubmitOrderForm({
                 isOrderDrawerOpen: false
 
             });
+
 
             /*
              * =============================================
@@ -336,13 +389,11 @@ export default function SubmitOrderForm({
                 return;
             }
 
+
             /*
              * =============================================
              * PEDIDO NORMAL
              * =============================================
-             *
-             * Mantenemos exactamente el comportamiento
-             * que ya tenía el cliente.
              */
 
             await actions.auth.signOut();
@@ -357,10 +408,13 @@ export default function SubmitOrderForm({
         }
 
         setIsProcessing(false);
+
     };
+
 
     return (
         <>
+
             <form
                 className="mt-5"
                 onSubmit={handleSubmit}
@@ -396,6 +450,7 @@ export default function SubmitOrderForm({
 
                     </div>
 
+
                     <div className="space-y-3">
 
                         <label
@@ -417,12 +472,14 @@ export default function SubmitOrderForm({
 
                     </div>
 
+
                     <DeliveryMethod
                         deliveryMethod={deliveryMethod}
                         setDeliveryMethod={setDeliveryMethod}
                         isProcessing={isProcessing}
                         onLocalityChange={setDeliveryLocality}
                     />
+
 
                     <div className="space-y-3">
 
@@ -452,6 +509,7 @@ export default function SubmitOrderForm({
 
                         </label>
 
+
                         <label className="flex items-center gap-3 cursor-pointer">
 
                             <input
@@ -475,6 +533,7 @@ export default function SubmitOrderForm({
 
                     </div>
 
+
                     <button
                         className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white w-full rounded-xl py-3 mt-5 text-lg font-bold uppercase cursor-pointer disabled:cursor-not-allowed"
                         type="submit"
@@ -494,12 +553,14 @@ export default function SubmitOrderForm({
 
             </form>
 
+
             <RedsysCardModal
                 isOpen={isCardModalOpen}
                 onClose={() =>
                     setIsCardModalOpen(false)
                 }
             />
+
         </>
     );
 }

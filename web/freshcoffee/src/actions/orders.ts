@@ -156,6 +156,9 @@ export const orders = {
                             deliveryMethod:
                                 input.deliveryMethod,
 
+                             deliveryLocality:
+                                input.deliveryLocality,
+
                             paymentMethod:
                                 input.paymentMethod,
 

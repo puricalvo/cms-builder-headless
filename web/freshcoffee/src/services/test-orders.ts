@@ -6,6 +6,7 @@ type CreateTestOrderData = {
     adminName: string;
     phone: string;
     deliveryMethod: "pickup" | "delivery";
+    deliveryLocality: string;
     paymentMethod: "cash" | "card";
     deliveryAddress: string;
     order: OrderItem[];
@@ -30,6 +31,11 @@ export async function createTestOrder(
 
             delivery_method_test_order:
                 data.deliveryMethod,
+
+            locality_test_order:
+            data.deliveryMethod === "delivery"
+                ? data.deliveryLocality
+                : "",
 
             delivery_address_test_order:
                 data.deliveryMethod === "delivery"
