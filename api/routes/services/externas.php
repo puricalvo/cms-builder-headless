@@ -2,6 +2,7 @@
 
 require_once "models/connection.php";
 require_once "controllers/post.controller.php";
+require_once "models/get.model.php";
 
 /*=============================================
 Métodos permitidos
@@ -199,6 +200,35 @@ if ($validate == "ok") {
             return;
 
         }
+
+        /*=============================================
+        Obtener administrador autenticado
+        =============================================*/
+
+        $admin = GetModel::getDataFilter(
+            $tableToken,
+            "*",
+            "token_".$suffix,
+            $token,
+            null,
+            null,
+            null,
+            null
+        );
+
+        if (empty($admin)) {
+
+            echo json_encode([
+                "status" => 401,
+                "results" => "Administrator not found"
+            ]);
+
+            return;
+
+        }
+
+        $_POST["id_admin_test_order"] = $admin[0]->id_admin;
+        $_POST["email_admin_test_order"] = $admin[0]->email_admin;
 
         /*=============================================
         Añadir fecha de creación
