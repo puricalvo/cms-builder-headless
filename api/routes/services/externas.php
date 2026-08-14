@@ -237,6 +237,7 @@ if ($validate == "ok") {
         $dateCreatedField = "date_created_" . $suffix_module;
 
         $_POST[$dateCreatedField] = date("Y-m-d");
+        $_POST["date_test_order"] = date("Y-m-d H:i:s");
 
         /*=============================================
         Validar columnas
