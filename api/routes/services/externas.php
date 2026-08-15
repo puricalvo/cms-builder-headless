@@ -205,30 +205,37 @@ if ($validate == "ok") {
         Obtener administrador autenticado
         =============================================*/
 
-        $admin = GetModel::getDataFilter(
-            $tableToken,
-            "*",
-            "token_".$suffix,
-            $token,
-            null,
-            null,
-            null,
-            null
-        );
+        if ($table === "test_orders") {
 
-        if (empty($admin)) {
+            $admin = GetModel::getDataFilter(
+                $tableToken,
+                "*",
+                "token_".$suffix,
+                $token,
+                null,
+                null,
+                null,
+                null
+            );
 
-            echo json_encode([
-                "status" => 401,
-                "results" => "Administrator not found"
-            ]);
+            if (empty($admin)) {
 
-            return;
+                echo json_encode([
+                    "status" => 401,
+                    "results" => "Administrator not found"
+                ]);
+
+                return;
+
+            }
+
+            $_POST["id_admin_test_order"] =
+                $admin[0]->id_admin;
+
+            $_POST["email_admin_test_order"] =
+                $admin[0]->email_admin;
 
         }
-
-        $_POST["id_admin_test_order"] = $admin[0]->id_admin;
-        $_POST["email_admin_test_order"] = $admin[0]->email_admin;
 
         /*=============================================
         Añadir fecha de creación
@@ -237,7 +244,10 @@ if ($validate == "ok") {
         $dateCreatedField = "date_created_" . $suffix_module;
 
         $_POST[$dateCreatedField] = date("Y-m-d");
-        $_POST["date_test_order"] = date("Y-m-d H:i:s");
+        
+        if ($table === "test_orders") {
+            $_POST["date_test_order"] = date("Y-m-d H:i:s");
+        }
 
         /*=============================================
         Validar columnas
