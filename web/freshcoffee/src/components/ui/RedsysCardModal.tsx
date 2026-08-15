@@ -189,17 +189,6 @@ export default function RedsysCardModal({
                     orderTotal * 100
                 );
 
-            console.log(
-                "IMPORTE PEDIDO:",
-                orderTotal
-            );
-
-            console.log(
-                "IMPORTE ENVIADO A REDSYS:",
-                amount
-            );
-
-
             /*
              * ==========================================
              * DATOS EMV 3DS
@@ -280,12 +269,6 @@ export default function RedsysCardModal({
                 return;
             }
 
-            console.log(
-                "RESPUESTA REDSYS:",
-                data
-            );
-
-
             /*
              * ==========================================
              * CHALLENGE 3DS
@@ -354,9 +337,6 @@ export default function RedsysCardModal({
                 data.Ds_MerchantParameters
             ) {
 
-                console.log(
-                    "REDSYS DEVOLVIÓ Ds_MerchantParameters"
-                );
 
                 window.location.href =
                     "/order/pricecafe";
