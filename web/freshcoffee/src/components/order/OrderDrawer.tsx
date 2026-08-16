@@ -31,7 +31,8 @@ export default function OrderDrawer() {
 
                     <div className="absolute inset-0 overflow-hidden">
 
-                        <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+                        
+                        <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-4 sm:pl-10 lg:pl-16">
 
                             <DialogPanel
                                 transition
@@ -40,11 +41,13 @@ export default function OrderDrawer() {
 
                                 <div className="flex h-full flex-col overflow-y-auto bg-white py-6 shadow-xl">
 
-                                    <div className="px-4 sm:px-6">
+                                   
+                                   <div className="relative mt-6 flex-1 px-4 sm:px-6">
 
                                         <div className="flex items-start justify-between">
 
-                                            <DialogTitle className="text-4xl font-bold text-gray-900">
+                                           
+                                            <DialogTitle className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
                                                 {isTestOrder
                                                     ? "Pedido de prueba"
                                                     : "Resumen de Pedido."

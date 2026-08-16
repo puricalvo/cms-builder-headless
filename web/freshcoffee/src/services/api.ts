@@ -1,5 +1,5 @@
-const API_URL = import.meta.env.API_URL;
-const API_KEY = import.meta.env.API_KEY;
+const API_URL = import.meta.env.API_URL ?? '/api/';
+const API_KEY = import.meta.env.API_KEY ?? '';
 
 export async function api(
   endpoint: string,
@@ -7,11 +7,12 @@ export async function api(
   body?: BodyInit | Record<string, any>
 ) {
 
+  const headers: Record<string, string> = {};
+  if (API_KEY) headers.Authorization = API_KEY;
+
   const options: RequestInit = {
     method,
-    headers: {
-      Authorization: API_KEY
-    }
+    headers
   };
 
   // Si enviamos un FormData, lo usamos directamente

@@ -33,8 +33,8 @@ export default function ProductDetails({ item }: Props) {
         </p>
 
         {item.size && <SizeSelector item={item} />}
-
-        <div className="flex justify-center gap-5 px-10 py-2 border border-gray-600 rounded-lg">
+        <div className="flex justify-center gap-4 sm:gap-5 px-6 sm:px-10 py-2 border border-gray-600 rounded-lg">
+        {/* <div className="flex justify-center gap-5 px-10 py-2 border border-gray-600 rounded-lg"> */}
           <button
             type="button"
             disabled={isDecreaseDisabled}

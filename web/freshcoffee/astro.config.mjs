@@ -15,6 +15,15 @@ export default defineConfig({
 
   integrations: [react(), vue()],
 
+  image: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "cms-builder-headless-dash.com",
+      },
+    ],
+  },
+
   vite: {
     plugins: [tailwindcss()],
     resolve: {
