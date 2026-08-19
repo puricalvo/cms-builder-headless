@@ -6,7 +6,7 @@ RUN a2enmod rewrite
 # Instalar herramientas necesarias para Composer
 RUN apt-get update \
     && apt-get install -y libzip-dev unzip \
-    && docker-php-ext-install zip \
+    && docker-php-ext-install zip pdo_mysql \
     && rm -rf /var/lib/apt/lists/*
 
 # Establecer la carpeta de la aplicación
