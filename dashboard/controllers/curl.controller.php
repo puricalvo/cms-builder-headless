@@ -41,7 +41,20 @@ class CurlController{
 
             curl_close($curl);
 
-            return json_decode($response);
+			$data = json_decode($response);
+
+			if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+
+				return (object)[
+					"status" => 500,
+					"results" => "JSON ERROR: ".json_last_error_msg()." | RESPONSE: ".$response
+				];
+
+			}
+
+			return $data;
+
+            //return json_decode($response);
     }
 
 	/*=============================================
