@@ -284,7 +284,7 @@ class TemplateController{
     $mail->Encoding = 'base64'; //Habilitar al subir el sistema a un hosting
 
     $mail->isSMTP();
-    $mail->Host = $_ENV["MAIL_HOST"];
+    $mail->Host = gethostbyname($_ENV["MAIL_HOST"]);
     $mail->SMTPAuth = true;
     $mail->Username = $_ENV["MAIL_USER"];
     $mail->Password = $_ENV["MAIL_PASS"];
