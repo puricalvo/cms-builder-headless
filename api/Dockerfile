@@ -19,6 +19,7 @@ COPY . /var/www/html/
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Instalar las dependencias de PHP
+RUN composer install --no-dev --optimize-autoloader
 
 
 # Permitir que Apache utilice .htaccess
