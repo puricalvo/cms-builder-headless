@@ -281,7 +281,7 @@ class TemplateController{
     $mail = new PHPMailer;
 
     $mail->CharSet = 'utf-8';
-    //$mail->Encoding = 'base64'; //Habilitar al subir el sistema a un hosting
+    $mail->Encoding = 'base64'; //Habilitar al subir el sistema a un hosting
 
     $mail->isSMTP();
     $mail->Host = $_ENV["MAIL_HOST"];
