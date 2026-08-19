@@ -1,5 +1,7 @@
 <?php 
 
+require_once __DIR__ . '/../extensions/vendor/autoload.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -278,30 +280,11 @@ class TemplateController{
 
     date_default_timezone_set("Europe/Madrid");
 
-    $mail = new PHPMailer;
+    $resend = Resend::client($_ENV["RESEND_API_KEY"]);
 
-    $mail->CharSet = 'utf-8';
-    $mail->Encoding = 'base64'; //Habilitar al subir el sistema a un hosting
+    $html = '
 
-    $mail->isSMTP();
-    $mail->Host = gethostbyname($_ENV["MAIL_HOST"]);
-    $mail->SMTPAuth = true;
-    $mail->Username = $_ENV["MAIL_USER"];
-    $mail->Password = $_ENV["MAIL_PASS"];
-    $mail->SMTPSecure = "ssl";
-    $mail->Port = $_ENV["MAIL_PORT"];
-
-    $mail->UseSendmailOptions = 0;
-
-    $mail->setFrom("noreply@dashboard.com","CMS-BUILDER");
-
-    $mail->Subject = $subject;
-
-    $mail->addAddress($email);
-
-    $mail->msgHTML('
-
-        <div style="width:100%; background:#eee; position:relative; font-family:sans-serif; padding-top:40px; padding-bottom: 40px;">
+        <div style="width:100%; background:#eee; position:relative; font-family:sans-serif; padding-top:40px; padding-bottom:40px;">
 
             <div style="position:relative; margin:auto; width:600px; background:white; padding:20px">
 
@@ -313,15 +296,19 @@ class TemplateController{
 
                     '.$message.'
 
-                    <a href="'.$link.'" target="_blank" style="text-decoration: none; mrgin-top:10px">
+                    <a href="'.$link.'" target="_blank" style="text-decoration:none; margin-top:10px">
 
-                        <div style="line-height:25px; background:#000; width:60%; padding:10px; color:white; border-radius:5px">Haz clic aquí</div>
+                        <div style="line-height:25px; background:#000; width:60%; padding:10px; color:white; border-radius:5px">
+                            Haz clic aquí
+                        </div>
 
                     </a>
 
                     <hr style="border:1px solid #ccc; width:80%">
 
-                    <h5 style="font-weight:100; color:#999">Si no solicitó el envío de este correo, haga caso omiso de este mensaje.</h5>
+                    <h5 style="font-weight:100; color:#999">
+                        Si no solicitó el envío de este correo, haga caso omiso de este mensaje.
+                    </h5>
 
                 </center>
 
@@ -329,23 +316,28 @@ class TemplateController{
 
         </div>
 
-     ');
+    ';
 
-	$mail->SMTPDebug = 2;
+    try {
 
-    $send = $mail->Send();
-
-    if(!$send){
-
-        return $mail->ErrorInfo;
-
-    }else{
+        $resend->emails->send([
+            'from' => 'onboarding@resend.dev',
+            'to' => $email,
+            'subject' => $subject,
+            'html' => $html
+        ]);
 
         return "ok";
+
+    } catch (Exception $e) {
+
+        return "Error Resend: ".$e->getMessage();
 
     }
 
 }
+
+	
  
 }
 
