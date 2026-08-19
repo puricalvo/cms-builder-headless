@@ -331,6 +331,8 @@ class TemplateController{
 
      ');
 
+	$mail->SMTPDebug = 2;
+
     $send = $mail->Send();
 
     if(!$send){
