@@ -274,70 +274,76 @@ class TemplateController{
 	Función para enviar correos electrónicos
 	=============================================*/
 
-	 static public function sendEmail($subject, $email, $title, $message, $link){
+	static public function sendEmail($subject, $email, $title, $message, $link){
 
-		date_default_timezone_set("Europe/Madrid");
+    date_default_timezone_set("Europe/Madrid");
 
-		$mail = new PHPMailer;
+    $mail = new PHPMailer;
 
-		$mail->CharSet = 'utf-8';
-		//$mail->Encoding = 'base64'; //Habilitar al subir el sistema a un hosting
+    $mail->CharSet = 'utf-8';
+    //$mail->Encoding = 'base64'; //Habilitar al subir el sistema a un hosting
 
-		$mail->isMail();
+    $mail->isSMTP();
+    $mail->Host = $_ENV["MAIL_HOST"];
+    $mail->SMTPAuth = true;
+    $mail->Username = $_ENV["MAIL_USER"];
+    $mail->Password = $_ENV["MAIL_PASS"];
+    $mail->SMTPSecure = "tls";
+    $mail->Port = $_ENV["MAIL_PORT"];
 
-		$mail->UseSendmailOptions = 0;
+    $mail->UseSendmailOptions = 0;
 
-		$mail->setFrom("noreply@dashboard.com","CMS-BUILDER");
+    $mail->setFrom("noreply@dashboard.com","CMS-BUILDER");
 
-		$mail->Subject = $subject;
+    $mail->Subject = $subject;
 
-		$mail->addAddress($email);
+    $mail->addAddress($email);
 
-		$mail->msgHTML('
+    $mail->msgHTML('
 
-			<div style="width:100%; background:#eee; position:relative; font-family:sans-serif; padding-top:40px; padding-bottom: 40px;">
-	
-				<div style="position:relative; margin:auto; width:600px; background:white; padding:20px">
-					
-					<center>
-						
-						<h3 style="font-weight:100; color:#999">'.$title.'</h3>
+        <div style="width:100%; background:#eee; position:relative; font-family:sans-serif; padding-top:40px; padding-bottom: 40px;">
 
-						<hr style="border:1px solid #ccc; width:80%">
+            <div style="position:relative; margin:auto; width:600px; background:white; padding:20px">
 
-						'.$message.'
+                <center>
 
-						<a href="'.$link.'" target="_blank" style="text-decoration: none; mrgin-top:10px">
+                    <h3 style="font-weight:100; color:#999">'.$title.'</h3>
 
-							<div style="line-height:25px; background:#000; width:60%; padding:10px; color:white; border-radius:5px">Haz clic aquí</div>
+                    <hr style="border:1px solid #ccc; width:80%">
 
-						</a>
+                    '.$message.'
 
-						<hr style="border:1px solid #ccc; width:80%">
+                    <a href="'.$link.'" target="_blank" style="text-decoration: none; mrgin-top:10px">
 
-						<h5 style="font-weight:100; color:#999">Si no solicitó el envío de este correo, haga caso omiso de este mensaje.</h5>
+                        <div style="line-height:25px; background:#000; width:60%; padding:10px; color:white; border-radius:5px">Haz clic aquí</div>
 
-					</center>
+                    </a>
 
-				</div>
+                    <hr style="border:1px solid #ccc; width:80%">
 
-			</div>	
+                    <h5 style="font-weight:100; color:#999">Si no solicitó el envío de este correo, haga caso omiso de este mensaje.</h5>
 
-		 ');
+                </center>
 
-		$send = $mail->Send();
+            </div>
 
-		if(!$send){
+        </div>
 
-			return $mail->ErrorInfo;	
-		
-		}else{
+     ');
 
-			return "ok";
+    $send = $mail->Send();
 
-		}
+    if(!$send){
 
-	}
+        return $mail->ErrorInfo;
+
+    }else{
+
+        return "ok";
+
+    }
+
+}
  
 }
 
