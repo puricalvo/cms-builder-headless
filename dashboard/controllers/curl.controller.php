@@ -28,33 +28,36 @@ class CurlController{
 
 		$response = curl_exec($curl);
 
-            if ($response === false) {
+		if ($response === false) {
 
-                $error = curl_error($curl);
-                curl_close($curl);
+			$error = curl_error($curl);
+			curl_close($curl);
 
-                return (object)[
-                    "status" => 500,
-                    "results" => $error
-                ];
-            }
+			return (object)[
+				"status" => 500,
+				"results" => $error
+			];
+		}
 
-            curl_close($curl);
+		curl_close($curl);
 
-			$data = json_decode($response);
+		$data = json_decode($response);
 
-			if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+		if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
 
-				return (object)[
-					"status" => 500,
-					"results" => "JSON ERROR: ".json_last_error_msg()." | RESPONSE: ".$response
-				];
+			return (object)[
+				"status" => 500,
+				"results" => "JSON ERROR: ".json_last_error_msg()." | RESPONSE: ".$response
+			];
 
-			}
+		}
 
-			return $data;
+		echo '<pre>';
+		var_dump($data);
+		echo '</pre>';
+		exit;
 
-            //return json_decode($response);
+		return $data;
     }
 
 	/*=============================================
