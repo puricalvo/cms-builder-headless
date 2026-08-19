@@ -42,7 +42,7 @@ if($adminTable->status == 404){
 
 }
 
-// echo '<pre>$admin '; print_r($admin); echo '</pre>';
+
 
 ?>
 

@@ -41,24 +41,9 @@ class CurlController{
 
 		curl_close($curl);
 
-		$data = json_decode($response);
-
-		if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
-
-			return (object)[
-				"status" => 500,
-				"results" => "JSON ERROR: ".json_last_error_msg()." | RESPONSE: ".$response
-			];
-
-		}
-
-		echo '<pre>';
-		var_dump($data);
-		echo '</pre>';
-		exit;
-
-		return $data;
-    }
+		return json_decode($response);
+	}
+    
 
 	/*=============================================
 	Peticiones a la API de CHATGPT
