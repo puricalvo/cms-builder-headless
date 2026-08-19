@@ -288,7 +288,7 @@ class TemplateController{
     $mail->SMTPAuth = true;
     $mail->Username = $_ENV["MAIL_USER"];
     $mail->Password = $_ENV["MAIL_PASS"];
-    $mail->SMTPSecure = "tls";
+    $mail->SMTPSecure = "ssl";
     $mail->Port = $_ENV["MAIL_PORT"];
 
     $mail->UseSendmailOptions = 0;
