@@ -29,26 +29,30 @@ class CurlController{
 
 		$inicio = microtime(true);
 
-		$response = curl_exec($curl);
+			$response = curl_exec($curl);
 
-		$tiempo = microtime(true) - $inicio;
+			$tiempo = microtime(true) - $inicio;
 
-		error_log("CURL API: ".$_ENV["API_URL"].$url." | Tiempo: ".round($tiempo, 3)." segundos");
+			if(strpos($url, "scode_admin") !== false){
 
-		if ($response === false) {
+				echo "<!-- CURL API: ".round($tiempo, 3)." segundos -->";
 
-			$error = curl_error($curl);
+			}
+
+			if ($response === false) {
+
+				$error = curl_error($curl);
+				curl_close($curl);
+
+				return (object)[
+					"status" => 500,
+					"results" => $error
+				];
+			}
+
 			curl_close($curl);
 
-			return (object)[
-				"status" => 500,
-				"results" => $error
-			];
-		}
-
-		curl_close($curl);
-
-		return json_decode($response);
+			return json_decode($response);
 
 		/* $response = curl_exec($curl);
 
