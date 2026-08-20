@@ -164,7 +164,7 @@ class AdminsController{
 					localStorage.setItem("tokenAdmin","'.$admin->results[0]->token_admin.'");
 					fncMatPreloader("off");
 					fncFormatInputs();
-					window.location.href = "/";
+					location.reload();
 
 				</script>';
 
