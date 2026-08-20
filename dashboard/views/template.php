@@ -362,25 +362,13 @@ Validar si existe la base de datos con la tabla admins
 
 						<?php 
 
-							/* $url = "pages?linkTo=order_page&equalTo=1";
-							$method = "GET";
-							$fields = array();
-
-							$page = CurlController::request($url,$method,$fields); */
-
 							$url = "pages?linkTo=order_page&equalTo=1";
 							$method = "GET";
 							$fields = array();
 
-							$inicioPeticion = microtime(true);
+							$page = CurlController::request($url,$method,$fields); 
 
-							$page = CurlController::request($url,$method,$fields);
-
-							$finPeticion = microtime(true);
-
-							$tiempoPeticion = $finPeticion - $inicioPeticion;
-
-							error_log("TIEMPO API PAGES: ".$tiempoPeticion." segundos");
+							
 
 							if($page->status == 200 && $page->results[0]->type_page == "modules"){
 
