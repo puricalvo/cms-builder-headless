@@ -26,35 +26,7 @@ class CurlController{
 			),
 		));
 
-
-		$inicio = microtime(true);
-
-			$response = curl_exec($curl);
-
-			$tiempo = microtime(true) - $inicio;
-
-			if(strpos($url, "scode_admin") !== false){
-
-				echo "<!-- CURL API: ".round($tiempo, 3)." segundos -->";
-
-			}
-
-			if ($response === false) {
-
-				$error = curl_error($curl);
-				curl_close($curl);
-
-				return (object)[
-					"status" => 500,
-					"results" => $error
-				];
-			}
-
-			curl_close($curl);
-
-			return json_decode($response);
-
-		/* $response = curl_exec($curl);
+		 $response = curl_exec($curl);
 
 		if ($response === false) {
 
@@ -69,7 +41,7 @@ class CurlController{
 
 		curl_close($curl);
 
-		return json_decode($response); */
+		return json_decode($response); 
 	}
     
 

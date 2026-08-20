@@ -145,11 +145,25 @@ class AdminsController{
 			Validar admin
 			=============================================*/
 
+			/* $url = "admins?linkTo=scode_admin&equalTo=".$_POST["scode_admin"];
+			$method = "GET";
+			$fields = array();
+
+			$admin = CurlController::request($url,$method,$fields); */
+
 			$url = "admins?linkTo=scode_admin&equalTo=".$_POST["scode_admin"];
 			$method = "GET";
 			$fields = array();
 
+			$inicio = microtime(true);
+
 			$admin = CurlController::request($url,$method,$fields);
+
+			$tiempo = microtime(true) - $inicio;
+
+			echo '<script>
+			console.log("TIEMPO API: '.$tiempo.' segundos");
+			</script>';
 			
 			if($admin->status == 200){
 
