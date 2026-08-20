@@ -24,23 +24,29 @@ foreach ($routesArray as $key => $value) {
 Validar si existe la base de datos con la tabla admins
 =============================================*/
 
-$url = "admins";
-$method = "GET";
-$fields = array();
+	if(isset($_SESSION["admin"])){
 
-$adminTable = CurlController::request($url,$method,$fields);
+		$admin = $_SESSION["admin"];
 
+	}else{
 
+		$url = "admins";
+		$method = "GET";
+		$fields = array();
 
-if($adminTable->status == 404){
+		$adminTable = CurlController::request($url,$method,$fields);
 
-	$admin = null;
+		if($adminTable->status == 404){
 
-}else{
+			$admin = null;
 
-	$admin = $adminTable->results[0];
+		}else{
 
-}
+			$admin = $adminTable->results[0];
+
+		}
+
+	}
 
 
 
