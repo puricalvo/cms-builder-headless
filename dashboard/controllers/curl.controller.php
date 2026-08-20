@@ -26,7 +26,14 @@ class CurlController{
 			),
 		));
 
+
+		$inicio = microtime(true);
+
 		$response = curl_exec($curl);
+
+		$tiempo = microtime(true) - $inicio;
+
+		error_log("CURL API: ".$_ENV["API_URL"].$url." | Tiempo: ".round($tiempo, 3)." segundos");
 
 		if ($response === false) {
 
@@ -42,6 +49,23 @@ class CurlController{
 		curl_close($curl);
 
 		return json_decode($response);
+
+		/* $response = curl_exec($curl);
+
+		if ($response === false) {
+
+			$error = curl_error($curl);
+			curl_close($curl);
+
+			return (object)[
+				"status" => 500,
+				"results" => $error
+			];
+		}
+
+		curl_close($curl);
+
+		return json_decode($response); */
 	}
     
 
