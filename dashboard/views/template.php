@@ -37,7 +37,6 @@ Validar si existe la base de datos con la tabla admins
 		$adminTable = CurlController::request($url,$method,$fields);
 
 		
-
 		if($adminTable->status == 404){
 
 			$admin = null;
@@ -325,8 +324,6 @@ Validar si existe la base de datos con la tabla admins
 
 								$page = CurlController::request($url,$method,$fields);
 
-								echo "<script>console.log('TEMPLATE - PAGE:', " . json_encode($page) . ");</script>";
-								
 								if($page->status == 200 && $page->results[0]->type_page == "modules"){
 
 									include "pages/dynamic/dynamic.php";
@@ -372,8 +369,6 @@ Validar si existe la base de datos con la tabla admins
 
 							$page = CurlController::request($url,$method,$fields); 
 
-							echo "<script>console.log('TEMPLATE - PAGE:', " . json_encode($page) . ");</script>";
-
 							if($page->status == 200 && $page->results[0]->type_page == "modules"){
 
 								include "pages/dynamic/dynamic.php";
@@ -405,8 +400,6 @@ Validar si existe la base de datos con la tabla admins
 								$fields = array();
 
 								$page = CurlController::request($url,$method,$fields);
-
-								echo "<script>console.log('TEMPLATE - PAGE:', " . json_encode($page) . ");</script>";
 
 								$routesArray[0] = array_keys(json_decode(urldecode($_SESSION["admin"]->permissions_admin),true))[0];
 

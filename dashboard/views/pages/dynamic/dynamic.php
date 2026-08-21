@@ -14,9 +14,17 @@ if (!empty($routesArray[0])){
 $method = "GET";
 $fields = array();
 
+//$modules = CurlController::request($url,$method,$fields);
+
+$inicio = microtime(true);
+
 $modules = CurlController::request($url,$method,$fields);
 
+$tiempo = microtime(true) - $inicio;
 
+echo '<script>
+console.log("TIEMPO DYNAMIC - MODULES: '.$tiempo.' segundos");
+</script>';
 
 if($modules->status == 200){
 
