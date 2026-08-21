@@ -86,6 +86,7 @@ class AdminsController{
     console.log("URL DESTINO:", window.location.href);
     window.location.href = "?scode='.base64_encode($login->results[0]->email_admin).'";
 }, 2000)
+					);
 								</script>
 								';
 								
