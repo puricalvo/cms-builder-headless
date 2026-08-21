@@ -36,7 +36,7 @@ Validar si existe la base de datos con la tabla admins
 
 		$adminTable = CurlController::request($url,$method,$fields);
 
-		echo "<script>console.log('TEMPLATE - PAGE:', " . json_encode($page) . ");</script>";
+		
 
 		if($adminTable->status == 404){
 
