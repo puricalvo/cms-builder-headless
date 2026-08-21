@@ -366,8 +366,17 @@ Validar si existe la base de datos con la tabla admins
 							$url = "pages?linkTo=order_page&equalTo=1";
 							$method = "GET";
 							$fields = array();
+							//$page = CurlController::request($url,$method,$fields); 
 
-							$page = CurlController::request($url,$method,$fields); 
+							$inicio = microtime(true);
+
+							$page = CurlController::request($url,$method,$fields);
+
+							$tiempo = microtime(true) - $inicio;
+
+							echo '<script>
+							console.log("TIEMPO TEMPLATE - PAGE: '.$tiempo.' segundos");
+							</script>';
 
 							if($page->status == 200 && $page->results[0]->type_page == "modules"){
 
