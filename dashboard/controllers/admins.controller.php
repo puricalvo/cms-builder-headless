@@ -79,13 +79,18 @@ class AdminsController{
 
 								fncFormatInputs();
 								fncMatPreloader("off");
-								fncSweetAlert("success", 
+								fncSweetAlert(
+									"success",
+									"Se ha enviado un código de seguridad para ingresar al sistema, por favor revise su correo electrónico o bandeja SPAM",
+									$_SERVER["REQUEST_SCHEME"]."://".$_SERVER["SERVER_NAME"]."?scode=".base64_encode($login->results[0]->email_admin)
+								);
+								
+								</script>
+								';
+								
+								/* fncSweetAlert("success", 
 								"Se ha enviado un código de seguridad para ingresar al sistema, por favor revise su correo electrónico o bandeja SPAM",
-								setTimeout(()=>window.location="'.$_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["SERVER_NAME"].'?scode='.base64_encode($login->results[0]->email_admin).'",2000));
-
-							</script>
-						';
-
+								setTimeout(()=>window.location="'.$_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["SERVER_NAME"].'?scode='.base64_encode($login->results[0]->email_admin).'",2000)); */
 						return;
 
 					}else{
