@@ -37,17 +37,9 @@ $url = $module->title_module."?orderBy=id_".$module->suffix_module."&orderMode=D
 $method = "GET";
 $fields = array();
 
-//$table = CurlController::request($url,$method,$fields);
-
-$inicio = microtime(true);
-
 $table = CurlController::request($url,$method,$fields);
 
-$tiempo = microtime(true) - $inicio;
 
-echo '<script>
-console.log("TIEMPO TABLE: '.$tiempo.' segundos");
-</script>';
 
 if($table->status == 200){
 

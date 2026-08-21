@@ -81,11 +81,15 @@ class AdminsController{
 								fncMatPreloader("off");
 								fncSweetAlert("success", 
 								"Se ha enviado un código de seguridad para ingresar al sistema, por favor revise su correo electrónico o bandeja SPAM",
-								setTimeout(()=>window.location="'.$_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["SERVER_NAME"].'?scode='.base64_encode($login->results[0]->email_admin).'",2000));
-
-							</script>
-						';
-
+								setTimeout(() => {
+    console.log("REDIRECCIÓN LOGIN -> CÓDIGO");
+    console.log("URL DESTINO:", window.location.href);
+    window.location.href = "?scode='.base64_encode($login->results[0]->email_admin).'";
+}, 2000)
+								</script>
+								';
+								
+								//setTimeout(()=>window.location="'.$_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["SERVER_NAME"].'?scode='.base64_encode($login->results[0]->email_admin).'",2000));
 						return;
 
 					}else{
