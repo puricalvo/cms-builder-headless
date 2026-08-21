@@ -69,7 +69,17 @@ class AdminsController{
 					$message = '<h4 style="font-weight: 100; color:#999; padding:0px 20px"><strong>Su código de seguridad: '.$securityCode.'</strong></4><h4 style="font-weight: 100; color:#999; padding:0px 20px">Ingrese nuevamente al sitio con este código de seguridad</4>';
 					$link = $_SERVER["REQUEST_SCHEME"]."://".$_SERVER["SERVER_NAME"]."?scode=".base64_encode($login->results[0]->email_admin);
 
-					$sendEmail = TemplateController::sendEmail($subject, $email, $title, $message, $link);
+					//$sendEmail = TemplateController::sendEmail($subject, $email, $title, $message, $link);
+
+					$inicio = microtime(true);
+
+						$sendEmail = TemplateController::sendEmail($subject, $email, $title, $message, $link);
+
+						$tiempo = microtime(true) - $inicio;
+
+						echo '<script>
+						console.log("TIEMPO ENVIO EMAIL: '.$tiempo.' segundos");
+						</script>';
 
 					if($sendEmail == "ok"){
 
@@ -145,17 +155,13 @@ class AdminsController{
 			Validar admin
 			=============================================*/
 
-			/* $url = "admins?linkTo=scode_admin&equalTo=".$_POST["scode_admin"];
-			$method = "GET";
-			$fields = array();
-
-			$admin = CurlController::request($url,$method,$fields); */
-
 			$url = "admins?linkTo=scode_admin&equalTo=".$_POST["scode_admin"];
 			$method = "GET";
 			$fields = array();
 
-			$admin = CurlController::request($url,$method,$fields);
+			$admin = CurlController::request($url,$method,$fields); 
+
+			
 	
 			if($admin->status == 200){
 
