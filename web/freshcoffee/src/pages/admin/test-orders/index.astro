@@ -1,0 +1,13 @@
+---
+import AdminTestOrdersLayout from "@/layouts/AdminTestOrdersLayout.astro";
+import TestOrderList from "@/components/admin/test-orders/TestOrderList";
+---
+
+<AdminTestOrdersLayout title="Pedidos de prueba">
+
+    <TestOrderList
+        client:only="react"
+        status="pending"
+    />
+
+</AdminTestOrdersLayout>

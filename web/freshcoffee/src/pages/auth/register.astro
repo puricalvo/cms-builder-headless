@@ -1,0 +1,105 @@
+---
+import AuthLayout from "@/layouts/AuthLayout.astro";
+import { actions } from "astro:actions";
+
+const result = Astro.getActionResult(actions.auth.register);
+
+if (result?.data) {
+    return Astro.redirect("/auth/login");
+}
+
+---
+
+<AuthLayout title="Crear Cuenta">
+
+    <form 
+    action={actions.auth.register}
+    method="POST"
+    class="space-y-6 mt-5 w-full"
+    novalidate
+>
+
+        <div>
+            <label
+                for="name_customer"
+                class="block text-sm/6 font-medium text-gray-900"
+            >
+                Nombre:
+            </label>
+
+            <div class="mt-2">
+                <input
+                    type="text"
+                    name="name_customer"
+                    id="name_customer"
+                    class="block w-full rounded-md bg-white px-3 py-1.5 text-base
+                    text-gray-900 outline-1 -outline-offset-1 outline-gray-300
+                    placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2
+                    focus:outline-amber-600 sm:text-sm/6"
+                />
+            </div>
+        </div>
+
+
+        <div>
+            <label
+                for="email_customer"
+                class="block text-sm/6 font-medium text-gray-900"
+            >
+                Email:
+            </label>
+
+            <div class="mt-2">
+                <input
+                    type="email"
+                    name="email_customer"
+                    id="email_customer"
+                    class="block w-full rounded-md bg-white px-3
+                    py-1.5 text-base text-gray-900 outline-1
+                    -outline-offset-1 outline-gray-300
+                    placeholder:text-gray-400 focus:outline-2
+                    focus:-outline-offset-2 focus:outline-amber-600
+                    sm:text-sm/6"
+                />
+            </div>
+        </div>
+
+
+        <div>
+            <label
+                for="password_customer"
+                class="block text-sm/6 font-medium text-gray-900"
+            >
+                Password:
+            </label>
+
+            <div class="mt-2">
+                <input
+                    type="password"
+                    name="password_customer"
+                    id="password_customer"
+                    class="block w-full rounded-md bg-white px-3
+                    py-1.5 text-base text-gray-900 outline-1
+                    -outline-offset-1 outline-gray-300
+                    placeholder:text-gray-400 focus:outline-2
+                    focus:-outline-offset-2 focus:outline-amber-600
+                    sm:text-sm/6"
+                />
+            </div>
+        </div>
+
+
+        <div>
+            <button
+                type="submit"
+                class="flex w-full justify-center rounded-md bg-black px-3 p-2
+                font-bold text-lg text-white shadow-xs focus-visible:outline-2
+                focus-visible:outline-offset-2 focus-visible:outline-amber-600 cursor-pointer"
+            >
+                Crear Cuenta
+            </button>
+        </div>
+
+    </form>
+
+</AuthLayout>

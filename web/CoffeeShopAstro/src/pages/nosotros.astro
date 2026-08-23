@@ -1,0 +1,33 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { getPage, getTable } from "@/services/pages";
+import { decode } from "@/services/utils";
+
+const page = await getPage("nosotros");
+const content = await getTable("nosotros");
+
+const nosotros = content[0];
+---
+
+<Layout
+    title={decode(page?.title_page ?? "")}
+    subtitle={decode(nosotros?.subtitle_nosotro ?? "")}
+    bgImage={decode(nosotros?.image_nosotro ?? "")}
+>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+        <img
+            src={decode(nosotros?.image_nosotro ?? "")}
+            alt={decode(nosotros?.title_nosotro ?? "")}
+            loading="lazy"
+        />
+
+        <div
+            class="text-xl space-y-3 mt-10 lg:mt-0"
+            set:html={decode(nosotros?.description_nosotro ?? "")}
+        ></div>
+
+    </div>
+
+</Layout>

@@ -1,0 +1,10 @@
+---
+import { getTable } from "@/services/pages";
+import PostCard from "./PostCard.astro";
+
+const posts = await getTable("entradas");
+---
+
+ {posts.map((post: any) => (
+    <PostCard post={post} />
+))} 

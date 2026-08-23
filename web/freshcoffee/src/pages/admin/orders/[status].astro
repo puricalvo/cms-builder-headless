@@ -1,0 +1,14 @@
+---
+import AdminOrdersLayout from "@/layouts/AdminOrdersLayout.astro";
+import OrderList from "@/components/admin/orders/OrderList";
+import { orderStatusOptions } from "@/utils/constants";
+const { status } = Astro.params
+const currentStatus = orderStatusOptions.filter(s => s.value === status)[0]
+
+---
+<AdminOrdersLayout title=`Administrar Ordenes - ${currentStatus.label}`>
+    <OrderList 
+        client:only="react"
+        status={currentStatus.value}
+    />
+</AdminOrdersLayout>

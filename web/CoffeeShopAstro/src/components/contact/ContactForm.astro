@@ -1,0 +1,104 @@
+<div>
+  <h3 class="text-coffee-900 font-black text-center text-2xl uppercase mb-5">Contacto</h3>
+  <form 
+    method="post"
+    class="space-y-3"  
+    novalidate
+  >
+    <legend class="text-xl">Llena todos los campos para enviar un mensaje.</legend>
+    <div class="flex flex-col space-y-3">
+      <label 
+        for="name"
+        class="input-label"
+      >Nombre:</label>
+      <input 
+        id="name"
+        type="text"
+        name="name"
+        placeholder="Tu Nombre"
+        class="input-field"
+      />
+    </div>
+
+    <div class="flex flex-col space-y-3">
+      <label 
+        for="email"
+        class="input-label"
+      >Email:</label>
+      <input 
+        id="email"
+        type="email"
+        name="email"
+        placeholder="Tu Email"
+        class="input-field"
+      />
+    </div>
+
+    <div class="flex flex-col space-y-3">
+      <label 
+        for="subject"
+        class="input-label"
+      >Asunto:</label>
+      <input 
+        id="subject"
+        type="text"
+        name="subject"
+        placeholder="Asunto de Mensaje"
+        class="input-field"
+      />
+    </div>
+    <div class="flex flex-col space-y-3">
+      <label 
+        for="message"
+        class="input-label"
+      >Contenido:</label>
+      <textarea 
+        id="message"
+        name="message"
+        placeholder="Tu Mensaje"
+        class="input-field h-32"
+      ></textarea>
+    </div>
+    <input 
+      type="submit" 
+      value="Enviar"  
+      class="bg-coffee-900 w-full p-3 text-white uppercase font-bold cursor-pointer hover:bg-coffee-700 text-2xl"
+    />
+  </form>
+</div>
+
+<script>
+    import { actions, isInputError } from "astro:actions"
+
+    import { Notyf } from 'notyf'
+    import "notyf/notyf.min.css"
+
+    const form = document.querySelector('form')
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        const form = e.target as HTMLFormElement
+        const formData = new FormData(form)
+       
+        const { data, error } = await actions.contact.sendEmail(formData)
+        const inputErrors = isInputError(error) ? error.issues : []
+
+        const notyf = new Notyf({
+                position: {x: 'right', y: 'top' },
+                duration: 5000,
+                ripple: false,
+                dismissible: true
+        })
+
+        if (inputErrors) {
+            inputErrors.forEach( error => {
+                notyf.error(error.message)
+            })
+        }
+
+        if(data?.message && !data.error){
+            notyf.success(data.message)
+            form.reset()
+        }
+    })
+
+</script>

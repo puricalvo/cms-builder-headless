@@ -1,0 +1,78 @@
+---
+import ProductsTable from "@/components/admin/products/ProductsTable.astro";
+import AdminProductsLayout from "@/layouts/AdminProductsLayout.astro";
+
+import {
+    getPage,
+    getModuleByPage,
+    getTable
+} from "@/services/pages";
+
+const PRODUCTS_PER_PAGE = 10;
+
+const PAGE = Number(
+    Astro.url.searchParams.get("page") ?? "1"
+);
+
+const { category } = Astro.params;
+
+let products: any[] = [];
+
+const page = await getPage(category!);
+
+if (page) {
+
+    const module = await getModuleByPage(page.id);
+
+    if (module) {
+
+        products = (await getTable(module.title)).map(
+            (product: any) => ({
+                ...product,
+                table: module.title,
+                category: page.title_page.replace("Precios ", ""),
+                category_url: category
+            })
+        );
+    }
+}
+
+
+// =====================================================
+// PAGINACIÓN
+// =====================================================
+
+const totalProducts = products.length;
+
+const totalPages = Math.ceil(
+    totalProducts / PRODUCTS_PER_PAGE
+);
+
+// Evitamos páginas inválidas
+const currentPage =
+    PAGE < 1
+        ? 1
+        : PAGE > totalPages && totalPages > 0
+            ? totalPages
+            : PAGE;
+
+
+// Índices de los productos que mostraremos
+const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
+const end = start + PRODUCTS_PER_PAGE;
+
+// Productos correspondientes a esta página
+const paginatedProducts = products.slice(start, end);
+
+---
+
+<AdminProductsLayout
+    title="Administrar Productos"
+    page={currentPage}
+    totalPages={totalPages}
+>
+
+    <ProductsTable products={paginatedProducts} />
+
+</AdminProductsLayout>
+

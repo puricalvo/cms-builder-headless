@@ -1,0 +1,103 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import PostCard from "@/components/blog/PostCard.astro";
+
+import { getTable } from "@/services/pages";
+import { decode } from "@/services/utils";
+
+export async function getStaticPaths() {
+
+    const posts = await getTable("entradas");
+
+    const slugs = new Set<string>();
+
+    posts.forEach((post: any) => {
+
+        decode(post.categories_entrada)
+            .split(",")
+            .forEach((cat: string) => {
+
+                const slug = cat
+                    .trim()
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                    .replace(/\s+/g, "-");
+
+                slugs.add(slug);
+
+            });
+
+    });
+
+    return [...slugs].map(slug => ({
+        params: { slug }
+    }));
+
+}
+
+const { slug } = Astro.params;
+
+const posts = await getTable("entradas");
+
+const filteredPosts = posts.filter((post: any) => {
+
+    const categories = decode(post.categories_entrada)
+        .split(",")
+        .map((cat: string) =>
+            cat.trim()
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/\s+/g, "-")
+        );
+
+    return categories.includes(slug!);
+
+});
+
+const categoryName =
+    filteredPosts.length > 0
+        ? decode(filteredPosts[0].categories_entrada)
+              .split(",")
+              .find((cat: string) => {
+                  const currentSlug = cat
+                      .trim()
+                      .toLowerCase()
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .replace(/\s+/g, "-");
+
+                  return currentSlug === slug;
+              })
+              ?.trim()
+        : slug ?? "";
+
+const bgImage =
+    filteredPosts.length > 0
+        ? decode(filteredPosts[0].image_entrada)
+        : "";
+---
+<Layout
+    title={`Categoría: <span class="normal-case">${categoryName}</span>`}
+    subtitle={`Entradas de la categoría: ${categoryName}`}
+    bgImage={bgImage}
+>
+
+    {
+        filteredPosts.length > 0 ? (
+
+            filteredPosts.map((post: any) => (
+                <PostCard post={post} />
+            ))
+
+        ) : (
+
+            <p class="text-center text-xl py-20">
+                No hay entradas para esta categoría.
+            </p>
+
+        )
+    }
+
+</Layout>

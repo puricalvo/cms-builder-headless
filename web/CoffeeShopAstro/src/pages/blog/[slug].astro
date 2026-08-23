@@ -1,0 +1,43 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { getTable } from "@/services/pages";
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+const entradas = await getTable("blog_entradas");
+
+// Buscamos la entrada cuyo id coincide con el parámetro de la URL
+const entrada = entradas.find(
+    (e: any) => String(e.id_blog_entrada) === slug
+);
+
+if (!entrada) {
+    return Astro.redirect("/404");
+}
+---
+
+<Layout
+    title={entrada.title_blog_entrada}
+    subtitle={entrada.subtitle_blog_entrada ?? ""}
+    bgImage={entrada.image_blog_entrada}
+>
+
+    <article class="space-y-5 max-w-4xl mx-auto">
+
+        <img
+            src={entrada.image_blog_entrada}
+            alt={entrada.title_blog_entrada}
+            loading="lazy"
+            class="w-full rounded-2xl"
+        />
+
+        <div
+            class="text-lg mt-5"
+            set:html={entrada.description_blog_entrada}
+        ></div>
+
+    </article>
+
+</Layout>

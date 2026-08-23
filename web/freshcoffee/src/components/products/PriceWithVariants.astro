@@ -1,0 +1,63 @@
+---
+import { formatCurrency } from "@/utils";
+import AddProductVariantButton from "./AddProductVariantButton";
+
+interface Props {
+    product: any;
+}
+
+const { product } = Astro.props;
+
+
+// CMS: el campo viene de price_preciocafe, price_preciopizza, etc.
+// decodeItem() lo convierte en product.price
+
+let prices = product.price ?? [];
+
+if (typeof prices === "string") {
+    try {
+        prices = JSON.parse(prices);
+    } catch {
+        prices = [];
+    }
+}
+
+---
+
+<div class="mt-3 sm:mt-5 space-y-3 sm:space-y-5">
+
+    {
+        prices.map((variant: any) => (
+            <dl class="grid grid-cols-[1fr_auto] items-center gap-3 text-lg font-black">
+
+                {variant.size && (
+                    <dt class="text-xl uppercase">
+                        {variant.size}:
+                    </dt>
+                )}
+
+                <dd class="flex items-center gap-3">
+
+                    <span class="text-2xl sm:text-3xl text-amber-400">
+                        {formatCurrency(Number(variant.price))}
+                    </span>
+
+                    <AddProductVariantButton
+                        client:only="react"
+                        product={{
+                            id: product.id,
+                            table: product.table,
+                            name: product.title,
+                            price: Number(variant.price),
+                            size: variant.size,
+                            variants: prices
+                        }}
+                    />
+
+                </dd>
+
+            </dl>
+        ))
+    }
+
+</div>

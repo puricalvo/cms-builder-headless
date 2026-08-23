@@ -1,0 +1,46 @@
+---
+import { getPages } from "@/services/pages";
+import { currentPage } from "@/utils";
+
+const pages = await getPages();
+
+const parentPage = pages.find(
+    (page: any) => page.url_page === "productos_freshcoffee"
+);
+
+const categories = pages.filter(
+    (page: any) =>
+        page.parent_id_page === parentPage?.id_page &&
+        page.url_page !== "catalogo"
+);
+
+const { category } = Astro.params;
+---
+
+<h2 class="text-xl mb-5">Categorías:</h2>
+
+<nav class="flex gap-5 flex-wrap">
+
+    <a 
+        href="/admin/products"
+        class="bg-indigo-400 hover:bg-indigo-500 transition-colors p-2 text-white rounded"
+    >
+        Ver Todos
+    </a>
+
+    {
+        categories.map((cat: any) => (
+            <a
+                href={`/admin/products/${cat.url_page}`}
+                class={`${currentPage(cat.url_page, category!) 
+                    ? 'bg-indigo-600' 
+                    : 'bg-indigo-400'} 
+                    hover:bg-indigo-500 transition-colors p-2 text-white rounded`}
+            >
+                {cat.title_page.replace("Precios ", "")}
+            </a>
+        ))
+    }
+
+</nav>
+

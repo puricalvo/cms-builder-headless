@@ -1,0 +1,118 @@
+---
+import AuthLayout from '@/layouts/AuthLayout.astro';
+import { actions } from "astro:actions";
+
+const result = Astro.getActionResult(actions.auth.startGuestSession);
+
+if (result?.data) {
+    return Astro.redirect("/order/pricecafe");
+}
+---
+
+<AuthLayout title="Bienvenido">
+
+    <div class="flex flex-col gap-5 items-center mt-10">
+
+        <div
+            id="guest-expired-message"
+            class="hidden w-full rounded-lg border border-amber-400 bg-amber-50 px-4 py-3 text-center text-lg font-bold text-gray-900"
+        >
+            Puedes comenzar de nuevo como invitado o iniciar sesión para continuar con su compra.
+        </div>
+
+        <form action={actions.auth.startGuestSession} method="POST" class="w-full" > 
+            <button type="submit" 
+            class="border border-amber-400 hover:bg-amber-400 px-5 py-3 rounded-lg text-2xl uppercase font-black w-full cursor-pointer" > 
+                Comenzar como invitado </button> 
+        </form>
+
+        <a
+            href="/auth/login"
+            class="border border-amber-400 hover:bg-amber-400 px-5 py-3 rounded-lg
+            text-2xl uppercase font-black"
+        >
+            Iniciar Sesión
+        </a>
+
+
+        <a
+            href="/auth/register"
+            class="border border-amber-400 hover:bg-amber-400 px-5 py-3 rounded-lg
+            text-2xl uppercase font-black"
+        >
+            Registrarse
+        </a>
+
+    </div>
+
+</AuthLayout>
+
+
+<script>
+
+    const GUEST_TIME = 2 * 60 * 1000;
+
+    const form = document.querySelector(
+        'form[action*="startGuestSession"]'
+    );
+
+    form?.addEventListener("submit", () => {
+
+        const started =
+            localStorage.getItem(
+                "freshcoffee-guest-started"
+            );
+
+        if (started) {
+
+            const elapsed =
+                Date.now() - Number(started);
+
+            if (elapsed >= GUEST_TIME) {
+
+                localStorage.setItem(
+                    "freshcoffee-order",
+                    JSON.stringify({
+                        state: {
+                            isOrderDrawerOpen: false,
+                            order: []
+                        },
+                        version: 0
+                    })
+                );
+
+                localStorage.removeItem(
+                    "freshcoffee-guest-started"
+                );
+
+            }
+
+        }
+
+        localStorage.setItem(
+            "freshcoffee-guest-started",
+            Date.now().toString()
+        );
+
+    });
+
+    const expiredMessage = document.querySelector(
+        "#guest-expired-message"
+    );
+
+    const guestExpired =
+        localStorage.getItem(
+            "freshcoffee-guest-expired"
+        );
+
+    if (guestExpired === "true") {
+
+        expiredMessage?.classList.remove("hidden");
+
+        localStorage.removeItem(
+            "freshcoffee-guest-expired"
+        );
+
+    }
+
+</script>

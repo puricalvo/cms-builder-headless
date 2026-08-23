@@ -1,0 +1,42 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { getPage, getTable } from "@/services/pages";
+import { decode } from "@/services/utils";
+import CategoryIconLabel from "@/components/ui/CategoryIconLabel.astro";
+import HomeGallery from "@/components/gallery/HomeGallery.astro";
+import ProductsMenu from "@/components/menu/ProductsMenu.astro";
+
+const page = await getPage("inicio");
+const content = await getTable("inicios");
+
+const inicio = content[0];
+---
+
+<Layout
+    title={decode(page?.title_page ?? "Inicio")}
+    subtitle={decode(inicio?.subtitle_inicio ?? "")}
+    bgImage={decode(inicio?.image_inicio ?? "")}
+>
+
+    <h2 class="text-coffee-400 text-center font-black text-lg uppercase after:coffee-icon">
+        Conoce más
+        <span class="block text-4xl text-coffee-900">Sobre nosotros</span>
+    </h2>
+
+    <div
+        class="text-center text-lg mt-10 [&>p]:mb-8"
+        set:html={decode(inicio?.description_inicio ?? "")}
+    ></div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <CategoryIconLabel icon="icon_coffee.svg" text="Café" />
+        <CategoryIconLabel icon="icon_dessert.svg" text="Postres" />
+        <CategoryIconLabel icon="icon_tea.svg" text="Té" />
+    </div>
+
+    
+     <HomeGallery slot="after-main-content" />
+    <ProductsMenu slot="after-main-content" /> 
+    
+
+</Layout>
