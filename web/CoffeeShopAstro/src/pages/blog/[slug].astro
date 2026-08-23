@@ -1,43 +1,73 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import PostMeta from "@/components/blog/PostMeta.astro";
+import PostCategories from "@/components/blog/PostCategories.astro";
 import { getTable } from "@/services/pages";
+import { decode } from "@/services/utils";
 
-export const prerender = false;
-
-const { slug } = Astro.params;
-
-const entradas = await getTable("blog_entradas");
-
-// Buscamos la entrada cuyo id coincide con el parámetro de la URL
-const entrada = entradas.find(
-    (e: any) => String(e.id_blog_entrada) === slug
-);
-
-if (!entrada) {
-    return Astro.redirect("/404");
+interface Props {
+    post: any;
 }
+
+export async function getStaticPaths() {
+    const posts = await getTable("entradas");
+
+    return posts.map((post: any) => ({
+        params: {
+            slug: String(post.id_entrada)
+        },
+        props: {
+            post
+        }
+    }));
+}
+
+const { post } = Astro.props;
 ---
 
 <Layout
-    title={entrada.title_blog_entrada}
-    subtitle={entrada.subtitle_blog_entrada ?? ""}
-    bgImage={entrada.image_blog_entrada}
+    title={decode(post.title_entrada)}
+    subtitle={decode(post.title_entrada)}
+    bgImage={decode(post.image_entrada)}
 >
-
     <article class="space-y-5 max-w-4xl mx-auto">
 
+        <PostMeta date={post.date_created_entrada} />
+
+        {
+            decode(post.categories_entrada)
+                .split(",")
+                .map((cat: string) => {
+                    const name = cat.trim();
+
+                    const slug = name
+                        .toLowerCase()
+                        .normalize("NFD")
+                        .replace(/[\u0300-\u036f]/g, "")
+                        .replace(/\s+/g, "-");
+
+                    return (
+                        <PostCategories
+                            name={name}
+                            slug={slug}
+                        />
+                    );
+                })
+        }
+
         <img
-            src={entrada.image_blog_entrada}
-            alt={entrada.title_blog_entrada}
+            src={decode(post.image_entrada)}
+            alt={`Imagen del Post: ${decode(post.title_entrada)}`}
             loading="lazy"
             class="w-full rounded-2xl"
         />
 
         <div
-            class="text-lg mt-5"
-            set:html={entrada.description_blog_entrada}
-        ></div>
-
+            set:html={decode(post.description_entrada)}
+            class="text-lg space-y-3 mt-5"
+        />
     </article>
-
 </Layout>
+
+
+
