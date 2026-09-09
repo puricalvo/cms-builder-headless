@@ -4,9 +4,6 @@ require_once __DIR__ . '/../extensions/vendor/autoload.php';
 
 
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
 class TemplateController{
 
 	/*=============================================
