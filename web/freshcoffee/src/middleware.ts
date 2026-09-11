@@ -21,8 +21,26 @@ export const onRequest = defineMiddleware(async (ctx, next) => {
         ctx.cookies.get("FRESHCOFFEE_TOKEN")?.value ?? "";
 
     const { user } = await verifySession(token);
-
     if (!user) {
+        return Response.redirect(
+            new URL("/auth/login", ctx.url),
+            302
+        );
+    }
+
+    // =====================================
+    // COMPROBAR ESTADO DEL ADMINISTRADOR
+    // =====================================
+
+    if (
+        ["superadmin", "admin", "editor"].includes(user.role) &&
+        user.status === false
+    ) {
+
+        ctx.cookies.delete("FRESHCOFFEE_TOKEN", {
+            path: "/",
+        });
+
         return Response.redirect(
             new URL("/auth/login", ctx.url),
             302
@@ -49,3 +67,4 @@ export const onRequest = defineMiddleware(async (ctx, next) => {
 
     return next();
 });
+

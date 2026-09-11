@@ -39,7 +39,7 @@ export async function verifySession(token: string) {
                     admin.token_admin === token
             );
 
-
+           
 
             if (data) {
 
@@ -47,7 +47,8 @@ export async function verifySession(token: string) {
                     user: {
                         id: data.id_admin,
                         role: data.rol_admin,
-                        email: data.email_admin
+                        email: data.email_admin,
+                        status: Number(data.status_admin) === 1
                     }
                 };
 
