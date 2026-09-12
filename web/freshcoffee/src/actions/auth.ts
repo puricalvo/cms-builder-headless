@@ -137,7 +137,7 @@ export const auth = {
                 {
                     method: "POST",
                     headers: {
-                        Authorization: import.meta.env.API_KEY,
+                        "Authorization": import.meta.env.API_KEY,
                         "Content-Type": "application/x-www-form-urlencoded",
                     },
                     body
@@ -236,7 +236,7 @@ export const auth = {
                 {
                     method: "POST",
                     headers: {
-                        Authorization: import.meta.env.API_KEY,
+                        "Authorization": import.meta.env.API_KEY,
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
                     body
@@ -301,7 +301,7 @@ export const auth = {
                 {
                     method: "POST",
                     headers: {
-                        Authorization: import.meta.env.API_KEY,
+                        "Authorization": import.meta.env.API_KEY,
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
                     body
@@ -312,12 +312,37 @@ export const auth = {
             const json = await res.json();
 
 
-
-            if(json.status === 200) {
-
+           if(json.status === 200) {
 
                 const customer = json.results[0];
 
+                // =====================================
+                // COMPROBAR ESTADO DEL CLIENTE
+                // =====================================
+
+                if (Number(customer.status_customer) === 0) {
+
+                    // Eliminar cualquier sesión anterior
+                    ctx.cookies.set(
+                        "FRESHCOFFEE_TOKEN",
+                        "",
+                        {
+                            httpOnly: true,
+                            sameSite: "strict",
+                            path: "/",
+                            maxAge: 0
+                        }
+                    );
+
+                    return {
+                        success: false,
+                        blocked: true
+                    };
+                }
+
+                // =====================================
+                // CLIENTE ACTIVO
+                // =====================================
 
                 ctx.cookies.set(
                     "FRESHCOFFEE_TOKEN",
@@ -330,13 +355,10 @@ export const auth = {
                     }
                 );
 
-
                 return {
                     success: true,
                     role: "customer"
                 };
-
-
             }
 
 
