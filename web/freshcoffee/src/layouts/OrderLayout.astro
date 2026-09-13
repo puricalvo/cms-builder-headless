@@ -6,10 +6,10 @@ import OrderDrawer from "@/components/order/OrderDrawer";
 ---
 <ClientRouter />
 <Layout title="Quiosco de Pedidos">
-    <div class="md:flex">
+    <div class="md:flex md:h-screen md:overflow-hidden">
 
         <CategoriesSidebar />
-        <main class="md:flex-1 md:h-screen md:overflow-y-scroll p-5">
+        <main class="min-h-0 md:flex-1 md:h-screen md:overflow-y-auto p-5">
             <slot />
         </main>
 

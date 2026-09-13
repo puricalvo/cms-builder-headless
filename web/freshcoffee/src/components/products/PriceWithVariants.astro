@@ -28,17 +28,17 @@ if (typeof prices === "string") {
 
     {
         prices.map((variant: any) => (
-            <dl class="grid grid-cols-[1fr_auto] items-center gap-3 text-lg font-black">
+            <dl class="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 text-lg font-black">
 
                 {variant.size && (
-                    <dt class="text-xl uppercase">
+                    <dt class="min-w-0 truncate text-xl uppercase">
                         {variant.size}:
                     </dt>
                 )}
 
-                <dd class="flex items-center gap-3">
+                <dd class="flex min-w-0 items-center gap-2">
 
-                    <span class="text-2xl sm:text-3xl text-amber-400">
+                    <span class="min-w-0 truncate text-xl sm:text-3xl text-amber-400">
                         {formatCurrency(Number(variant.price))}
                     </span>
 
