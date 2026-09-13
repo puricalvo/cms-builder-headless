@@ -17,8 +17,7 @@ export default function AddProductVariantButton({product}: Props) {
     return (
         <button
             type="button"
-            className="bg-black hover:bg-amber-400 text-lg text-white flex h-10 w-10 shrink-0 items-center justify-center p-0 uppercase font-bold
-            cursor-pointer rounded-xl leading-2" 
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-500 bg-gray-700 p-0 text-lg font-bold leading-2 text-white shadow-sm transition-all duration-300 hover:scale-110 hover:border-amber-300 hover:bg-gray-600 hover:shadow-[0_0_14px_rgba(251,191,36,0.65)] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2"
             onClick={handleClick}
         >
             +

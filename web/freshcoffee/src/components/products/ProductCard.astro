@@ -26,7 +26,7 @@ try {
 }
 ---
 
-<div class="border border-gray-200 mx-auto w-full max-w-[320px] sm:max-w-none sm:mx-0">
+<div class="product-card border border-gray-200 mx-auto w-full max-w-[320px] sm:max-w-none sm:mx-0">
  
 
     <div class="mt-2 w-full h-40 sm:h-auto sm:aspect-3/4 overflow-visible md:mt-0 flex items-center justify-center bg-transparent">
@@ -78,3 +78,27 @@ try {
     </div>
 
 </div>
+
+<style>
+    .product-card {
+        animation: product-card-enter 450ms ease-out both;
+    }
+
+    @keyframes product-card-enter {
+        from {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .product-card {
+            animation: none;
+        }
+    }
+</style>

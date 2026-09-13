@@ -18,8 +18,7 @@ export default function AddProductButton({product} : Props) {
   return (
     <button
         type="button"
-        className="bg-black hover:bg-amber-400 text-lg text-white w-full mt-5 p-3 uppercase font-bold
-        cursor-pointer rounded-xl"
+        className="mt-5 w-full rounded-full border border-gray-500 bg-gray-700 px-5 py-3 text-lg font-bold uppercase text-white shadow-sm transition-all duration-300 hover:scale-[1.02] hover:border-amber-300 hover:bg-gray-600 hover:shadow-[0_0_14px_rgba(251,191,36,0.65)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2"
         onClick={handleClick}
     >
         Agregar
