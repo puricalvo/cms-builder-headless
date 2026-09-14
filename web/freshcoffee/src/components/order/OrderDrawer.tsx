@@ -19,7 +19,7 @@ export default function OrderDrawer() {
             <Dialog
                 open={isOrderDrawerOpen}
                 onClose={toggleOrderDrawer}
-                className="relative z-10"
+                className="relative z-50"
             >
 
                 <DialogBackdrop

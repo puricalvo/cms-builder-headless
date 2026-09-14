@@ -91,7 +91,7 @@ export default function SignOutButton() {
             type="button"
             onClick={handleSignOut}
             disabled={isProcessing}
-            className="flex items-center justify-center bg-gray-700 hover:bg-gray-800 disabled:bg-gray-400 text-white p-2 rounded-xl font-bold"
+            className="flex items-center justify-center bg-gray-600 hover:bg-gray-700 disabled:bg-gray-400 text-[#F3EDE0] p-2 rounded-xl font-bold"
         >
             {isProcessing
                 ? "Saliendo..."

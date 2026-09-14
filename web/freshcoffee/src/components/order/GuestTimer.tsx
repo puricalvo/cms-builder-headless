@@ -193,12 +193,12 @@ export default function GuestTimer() {
 
     return (
         <div
-            className="flex items-center gap-2 font-bold text-lg"
+             className="flex items-center gap-2 font-bold text-lg text-[#F3EDE0]"
             title="Tiempo disponible como invitado"
         >
 
             <ClockIcon
-                className="h-8 w-8"
+                className="h-8 w-8 text-white"
                 aria-hidden="true"
             />
 

@@ -3,14 +3,16 @@ import { ClientRouter } from 'astro:transitions'
 import CategoriesSidebar from "@/components/categories/CategoriesSidebar.astro";
 import Layout from "./Layout.astro";
 import OrderDrawer from "@/components/order/OrderDrawer";
+import Footer from "@/components/ui/Footer.astro";
 ---
 <ClientRouter />
 <Layout title="Quiosco de Pedidos">
     <div class="md:flex md:h-screen md:overflow-hidden">
 
         <CategoriesSidebar />
-        <main class="min-h-0 md:flex-1 md:h-screen md:overflow-y-auto p-5">
+        <main class="min-h-0 md:flex-1 md:h-screen md:overflow-y-auto p-5 pt-0 bg-[#FCF8EE]">
             <slot />
+            <Footer />
         </main>
 
         <OrderDrawer client:only="react" />

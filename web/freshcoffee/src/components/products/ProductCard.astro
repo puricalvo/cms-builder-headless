@@ -26,7 +26,7 @@ try {
 }
 ---
 
-<div class="product-card border border-gray-200 mx-auto w-full max-w-[320px] sm:max-w-none sm:mx-0">
+<div class="product-card border border-gray-200 bg-white overflow-hidden mx-auto w-full max-w-[320px] sm:max-w-none sm:mx-0">
  
 
     <div class="mt-2 w-full h-40 sm:h-auto sm:aspect-3/4 overflow-visible md:mt-0 flex items-center justify-center bg-transparent">
@@ -40,7 +40,7 @@ try {
 
     <div class="p-3 sm:p-4">
 
-            <h3 class="text-lg sm:text-xl font-black sm:h-16 lg:mb-2 xl:mb-2">
+            <h3 class="text-lg sm:text-xl font-black sm:h-16 md:h-24 lg:mb-2 xl:mb-2">
                 {product.title}
             </h3>
 
@@ -57,7 +57,7 @@ try {
             ) : (
 
                 <>
-                    <p class="mt-2 sm:mt-3 lg:mt-4 font-black text-lg sm:text-xl md:text-2xl lg:text-3xl text-amber-400">
+                    <p class="mt-2 sm:mt-3 lg:mt-4 font-black text-xl sm:text-2xl text-amber-400">
                         {formatCurrency(Number(product.price))}
                     </p>
 
