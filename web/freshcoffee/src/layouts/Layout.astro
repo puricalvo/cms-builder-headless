@@ -1,5 +1,6 @@
 ---
 	import ToastNotification from '@/components/ui/ToastNotification'
+	import CookieConsent from '@/components/ui/CookieConsent'
 	import "react-toastify/dist/ReactToastify.css"
 	import '@/styles/global.css'
 	
@@ -21,6 +22,7 @@
 		<slot />
 
 		<ToastNotification client:only="react" />
+		<CookieConsent client:only="react" />
 	</body>
 </html>
 

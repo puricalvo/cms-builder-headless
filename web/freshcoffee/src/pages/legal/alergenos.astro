@@ -1,0 +1,188 @@
+---
+import LegalLayout from "@/layouts/LegalLayout.astro";
+---
+
+<LegalLayout title="Alérgenos">
+
+    <div class="space-y-8">
+
+        <!-- Cabecera -->
+        <div>
+
+            <a
+                href="/order/pricecafe"
+                class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition-colors hover:text-amber-500"
+            >
+                ← Volver al quiosco
+            </a>
+
+            <h1 class="mt-5 text-center text-3xl font-black tracking-tight text-slate-700 sm:text-4xl">
+                Información sobre alérgenos
+            </h1>
+
+            <p class="mt-4 text-slate-600 leading-relaxed">
+                En FreshCoffee queremos que puedas realizar tu pedido
+                con la mayor información posible sobre los productos.
+            </p>
+
+        </div>
+
+
+        <!-- Información sobre alérgenos -->
+        <section class="space-y-4 text-slate-600 leading-relaxed">
+
+            <h2 class="text-xl font-semibold text-slate-700">
+                Principales alérgenos
+            </h2>
+
+            <p>
+                Algunos productos pueden contener ingredientes que causen
+                alergias o intolerancias. A continuación mostramos los
+                principales alérgenos alimentarios.
+            </p>
+
+
+            <!-- Alérgenos en dos columnas -->
+            <div class="mx-auto mt-6 max-w-3xl">
+
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+
+                    <!-- Cereales con gluten -->
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+                        <span class="text-3xl" aria-hidden="true">🌾</span>
+                        <span class="text-sm font-semibold text-slate-700 sm:text-base">
+                            Cereales con gluten
+                        </span>
+                    </div>
+
+                    <!-- Crustáceos -->
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+                        <span class="text-3xl" aria-hidden="true">🦐</span>
+                        <span class="text-sm font-semibold text-slate-700 sm:text-base">
+                            Crustáceos
+                        </span>
+                    </div>
+
+                    <!-- Huevos -->
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+                        <span class="text-3xl" aria-hidden="true">🥚</span>
+                        <span class="text-sm font-semibold text-slate-700 sm:text-base">
+                            Huevos
+                        </span>
+                    </div>
+
+                    <!-- Pescado -->
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+                        <span class="text-3xl" aria-hidden="true">🐟</span>
+                        <span class="text-sm font-semibold text-slate-700 sm:text-base">
+                            Pescado
+                        </span>
+                    </div>
+
+                    <!-- Cacahuetes -->
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+                        <span class="text-3xl" aria-hidden="true">🥜</span>
+                        <span class="text-sm font-semibold text-slate-700 sm:text-base">
+                            Cacahuetes
+                        </span>
+                    </div>
+
+                    <!-- Soja -->
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+                        <span class="text-3xl" aria-hidden="true">🫘</span>
+                        <span class="text-sm font-semibold text-slate-700 sm:text-base">
+                            Soja
+                        </span>
+                    </div>
+
+                    <!-- Leche -->
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+                        <span class="text-3xl" aria-hidden="true">🥛</span>
+                        <span class="text-sm font-semibold text-slate-700 sm:text-base">
+                            Leche
+                        </span>
+                    </div>
+
+                    <!-- Frutos de cáscara -->
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+                        <span class="text-3xl" aria-hidden="true">🌰</span>
+                        <span class="text-sm font-semibold text-slate-700 sm:text-base">
+                            Frutos de cáscara
+                        </span>
+                    </div>
+
+                    <!-- Apio -->
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+                        <span class="text-3xl" aria-hidden="true">🌿</span>
+                        <span class="text-sm font-semibold text-slate-700 sm:text-base">
+                            Apio
+                        </span>
+                    </div>
+
+                    <!-- Mostaza -->
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+                        <span class="text-3xl" aria-hidden="true">🟡</span>
+                        <span class="text-sm font-semibold text-slate-700 sm:text-base">
+                            Mostaza
+                        </span>
+                    </div>
+
+                    <!-- Sésamo -->
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+                        <span class="text-3xl" aria-hidden="true">🌱</span>
+                        <span class="text-sm font-semibold text-slate-700 sm:text-base">
+                            Sésamo
+                        </span>
+                    </div>
+
+                    <!-- Dióxido de azufre y sulfitos -->
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+                        <span class="text-3xl" aria-hidden="true">🧪</span>
+                        <span class="text-sm font-semibold text-slate-700 sm:text-base">
+                            Dióxido de azufre y sulfitos
+                        </span>
+                    </div>
+
+                    <!-- Altramuces -->
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+                        <span class="text-3xl" aria-hidden="true">🌱</span>
+                        <span class="text-sm font-semibold text-slate-700 sm:text-base">
+                            Altramuces
+                        </span>
+                    </div>
+
+                    <!-- Moluscos -->
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+                        <span class="text-3xl" aria-hidden="true">🦪</span>
+                        <span class="text-sm font-semibold text-slate-700 sm:text-base">
+                            Moluscos
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Aviso -->
+            <div class="mt-8 rounded-xl border border-amber-200 bg-amber-50 p-4">
+
+                <p class="text-sm leading-6 text-slate-700">
+                    Si tienes alguna alergia o intolerancia alimentaria,
+                    consulta la información disponible sobre los ingredientes
+                    antes de realizar tu pedido.
+                </p>
+
+                <p class="mt-3 text-sm font-semibold leading-6 text-slate-700">
+                    Ante cualquier duda, solicita información al personal
+                    de la cafetería antes de consumir el producto.
+                </p>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</LegalLayout>
+

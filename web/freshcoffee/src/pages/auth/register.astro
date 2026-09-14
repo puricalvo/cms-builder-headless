@@ -12,94 +12,126 @@ if (result?.data) {
 
 <AuthLayout title="Crear Cuenta">
 
-    <form 
-    action={actions.auth.register}
-    method="POST"
-    class="space-y-6 mt-5 w-full"
-    novalidate
->
+    <div class="flex flex-col gap-4">
 
-        <div>
-            <label
-                for="name_customer"
-                class="block text-sm/6 font-medium text-gray-900"
-            >
-                Nombre:
-            </label>
+        <!-- Aviso del proyecto -->
+        <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center">
 
-            <div class="mt-2">
-                <input
-                    type="text"
-                    name="name_customer"
-                    id="name_customer"
-                    class="block w-full rounded-md bg-white px-3 py-1.5 text-base
-                    text-gray-900 outline-1 -outline-offset-1 outline-gray-300
-                    placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2
-                    focus:outline-amber-600 sm:text-sm/6"
-                />
+            <p class="text-base font-black text-slate-700">
+                ⚠️ Proyecto de demostración
+            </p>
+
+            <p class="mt-1 text-sm leading-5 text-slate-600">
+                FreshCoffee no es un servicio real y los pedidos no serán procesados.
+            </p>
+
+            <p class="mt-1 text-xs font-semibold leading-5 text-slate-500">
+                No introduzcas datos personales ni contraseñas reales.
+            </p>
+
+        </div>
+
+
+        <!-- Formulario -->
+        <form
+            action={actions.auth.register}
+            method="POST"
+            class="space-y-6 w-full"
+            novalidate
+        >
+
+            <div>
+                <label
+                    for="name_customer"
+                    class="block text-sm/6 font-medium text-gray-900"
+                >
+                    Nombre:
+                </label>
+
+                <div class="mt-2">
+                    <input
+                        type="text"
+                        name="name_customer"
+                        id="name_customer"
+                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base
+                        text-gray-900 outline-1 -outline-offset-1 outline-gray-300
+                        placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2
+                        focus:outline-amber-600 sm:text-sm/6"
+                    />
+                </div>
             </div>
-        </div>
 
 
-        <div>
-            <label
-                for="email_customer"
-                class="block text-sm/6 font-medium text-gray-900"
-            >
-                Email:
-            </label>
+            <div>
+                <label
+                    for="email_customer"
+                    class="block text-sm/6 font-medium text-gray-900"
+                >
+                    Email:
+                </label>
 
-            <div class="mt-2">
-                <input
-                    type="email"
-                    name="email_customer"
-                    id="email_customer"
-                    class="block w-full rounded-md bg-white px-3
-                    py-1.5 text-base text-gray-900 outline-1
-                    -outline-offset-1 outline-gray-300
-                    placeholder:text-gray-400 focus:outline-2
-                    focus:-outline-offset-2 focus:outline-amber-600
-                    sm:text-sm/6"
-                />
+                <div class="mt-2">
+                    <input
+                        type="email"
+                        name="email_customer"
+                        id="email_customer"
+                        class="block w-full rounded-md bg-white px-3
+                        py-1.5 text-base text-gray-900 outline-1
+                        -outline-offset-1 outline-gray-300
+                        placeholder:text-gray-400 focus:outline-2
+                        focus:-outline-offset-2 focus:outline-amber-600
+                        sm:text-sm/6"
+                    />
+                </div>
             </div>
-        </div>
 
 
-        <div>
-            <label
-                for="password_customer"
-                class="block text-sm/6 font-medium text-gray-900"
-            >
-                Password:
-            </label>
+            <div>
+                <label
+                    for="password_customer"
+                    class="block text-sm/6 font-medium text-gray-900"
+                >
+                    Password:
+                </label>
 
-            <div class="mt-2">
-                <input
-                    type="password"
-                    name="password_customer"
-                    id="password_customer"
-                    class="block w-full rounded-md bg-white px-3
-                    py-1.5 text-base text-gray-900 outline-1
-                    -outline-offset-1 outline-gray-300
-                    placeholder:text-gray-400 focus:outline-2
-                    focus:-outline-offset-2 focus:outline-amber-600
-                    sm:text-sm/6"
-                />
+                <div class="mt-2">
+                    <input
+                        type="password"
+                        name="password_customer"
+                        id="password_customer"
+                        class="block w-full rounded-md bg-white px-3
+                        py-1.5 text-base text-gray-900 outline-1
+                        -outline-offset-1 outline-gray-300
+                        placeholder:text-gray-400 focus:outline-2
+                        focus:-outline-offset-2 focus:outline-amber-600
+                        sm:text-sm/6"
+                    />
+                </div>
             </div>
-        </div>
 
 
-        <div>
-            <button
-                type="submit"
-                class="flex w-full justify-center rounded-md bg-black px-3 p-2
-                font-bold text-lg text-white shadow-xs focus-visible:outline-2
-                focus-visible:outline-offset-2 focus-visible:outline-amber-600 cursor-pointer"
-            >
-                Crear Cuenta
-            </button>
-        </div>
+            <div>
+                <button
+                    type="submit"
+                    class="flex w-full justify-center rounded-md bg-black px-3 p-2
+                    font-bold text-lg text-white shadow-xs focus-visible:outline-2
+                    focus-visible:outline-offset-2 focus-visible:outline-amber-600 cursor-pointer"
+                >
+                    Crear Cuenta
+                </button>
+            </div>
 
-    </form>
+        </form>
+
+
+        <!-- Volver -->
+        <a
+            href="/"
+            class="text-center text-sm font-semibold text-slate-600 transition-colors hover:text-amber-500"
+        >
+            ← Volver
+        </a>
+
+    </div>
 
 </AuthLayout>

@@ -1,0 +1,100 @@
+---
+import LegalLayout from "@/layouts/LegalLayout.astro";
+
+const fromHome = Astro.url.searchParams.get("from") === "home";
+
+const backHref = fromHome
+    ? "/"
+    : "/order/pricecafe";
+
+const backLabel = fromHome
+    ? "← Volver al inicio"
+    : "← Volver al quiosco";
+---
+
+<LegalLayout title="Política de cookies">
+
+    <div class="space-y-8">
+
+        <div>
+            <a
+                href={backHref}
+                class="text-sm font-semibold text-slate-600 hover:text-amber-500 transition-colors"
+            >
+                {backLabel}
+            </a>
+
+            <h1 class="mt-6 text-3xl sm:text-4xl font-bold text-slate-700">
+                Política de cookies
+            </h1>
+
+            <p class="mt-4 text-slate-600 leading-relaxed">
+                En FreshCoffee utilizamos cookies y tecnologías similares
+                necesarias para el funcionamiento de la aplicación y para
+                ofrecer una experiencia adecuada a los usuarios.
+            </p>
+        </div>
+
+        <section class="space-y-4 text-slate-600 leading-relaxed">
+            <h2 class="text-xl font-semibold text-slate-700">
+                ¿Qué son las cookies?
+            </h2>
+
+            <p>
+                Las cookies son pequeños archivos que se almacenan en el
+                dispositivo del usuario cuando visita determinados sitios
+                web o utiliza aplicaciones web.
+            </p>
+
+            <p>
+                Estas tecnologías permiten recordar determinada información
+                y facilitar el funcionamiento de algunas funcionalidades.
+            </p>
+        </section>
+
+        <section class="space-y-4 text-slate-600 leading-relaxed">
+            <h2 class="text-xl font-semibold text-slate-700">
+                Cookies utilizadas por FreshCoffee
+            </h2>
+
+            <p>
+                FreshCoffee puede utilizar cookies o mecanismos equivalentes
+                necesarios para mantener la sesión del usuario, gestionar
+                la autenticación y permitir el correcto funcionamiento
+                de las funcionalidades disponibles.
+            </p>
+
+            <p>
+                Algunas de estas tecnologías pueden ser estrictamente
+                necesarias para prestar el servicio solicitado por el usuario.
+            </p>
+        </section>
+
+        <section class="space-y-4 text-slate-600 leading-relaxed">
+            <h2 class="text-xl font-semibold text-slate-700">
+                Gestión de las cookies
+            </h2>
+
+            <p>
+                El usuario puede configurar las opciones de cookies desde
+                las herramientas disponibles en su navegador, aunque la
+                desactivación de determinadas cookies puede afectar al
+                funcionamiento de algunas funcionalidades de la aplicación.
+            </p>
+        </section>
+
+        <section class="space-y-4 text-slate-600 leading-relaxed">
+            <h2 class="text-xl font-semibold text-slate-700">
+                Actualizaciones
+            </h2>
+
+            <p>
+                Esta política puede actualizarse cuando sea necesario para
+                reflejar cambios en las funcionalidades de FreshCoffee,
+                en las tecnologías utilizadas o en la normativa aplicable.
+            </p>
+        </section>
+
+    </div>
+
+</LegalLayout>

@@ -28,9 +28,6 @@ const isBlocked =
     result?.data?.blocked === true;
 
 
-
-
-
 // =====================================
 // LOGIN CORRECTO
 // =====================================
@@ -70,120 +67,140 @@ if (
 
 <AuthLayout title="Iniciar Sesión">
 
-    {actionError && (
-        <ErrorMessage>
-            {actionError}
-        </ErrorMessage>
-    )}
+    <div class="flex flex-col gap-4">
+
+        <!-- Aviso del proyecto -->
+        <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center">
+
+            <p class="text-base font-black text-slate-700">
+                ⚠️ Proyecto de demostración
+            </p>
+
+            <p class="mt-1 text-sm leading-5 text-slate-600">
+                FreshCoffee no es un servicio real y los pedidos no serán procesados.
+            </p>
+
+            <p class="mt-1 text-xs font-semibold leading-5 text-slate-500">
+                No introduzcas datos personales ni contraseñas reales.
+            </p>
+
+        </div>
 
 
-    <form
-        action={actions.auth.signInUser}
-        method="POST"
-        class="space-y-6 mt-5 w-full"
-        novalidate
-    >
-
-        <div>
-
-            <label
-                for="email"
-                class="block text-sm/6 font-medium text-gray-900"
-            >
-                Email:
-            </label>
+        {actionError && (
+            <ErrorMessage>
+                {actionError}
+            </ErrorMessage>
+        )}
 
 
-            <div class="mt-2">
+        <form
+            action={actions.auth.signInUser}
+            method="POST"
+            class="space-y-6 w-full"
+            novalidate
+        >
 
-                <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    class="block w-full rounded-md bg-white px-3 py-1.5
-                    text-base text-gray-900 outline-1
-                    -outline-offset-1 outline-gray-300
-                    placeholder:text-gray-400 focus:outline-2
-                    focus:-outline-offset-2 focus:outline-amber-600
-                    sm:text-sm/6"
-                />
+            <div>
+
+                <label
+                    for="email"
+                    class="block text-sm/6 font-medium text-gray-900"
+                >
+                    Email:
+                </label>
+
+                <div class="mt-2">
+
+                    <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        class="block w-full rounded-md bg-white px-3 py-1.5
+                        text-base text-gray-900 outline-1
+                        -outline-offset-1 outline-gray-300
+                        placeholder:text-gray-400 focus:outline-2
+                        focus:-outline-offset-2 focus:outline-amber-600
+                        sm:text-sm/6"
+                    />
+
+                </div>
+
+                {inputErrors.email && (
+                    <ErrorMessage>
+                        {inputErrors.email}
+                    </ErrorMessage>
+                )}
 
             </div>
 
 
-            {inputErrors.email && (
-                <ErrorMessage>
-                    {inputErrors.email}
-                </ErrorMessage>
-            )}
+            <div>
 
-        </div>
+                <label
+                    for="password"
+                    class="block text-sm/6 font-medium text-gray-900"
+                >
+                    Password:
+                </label>
 
+                <div class="mt-2">
 
+                    <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        class="block w-full rounded-md bg-white px-3
+                        py-1.5 text-base text-gray-900 outline-1
+                        -outline-offset-1 outline-gray-300
+                        placeholder:text-gray-400 focus:outline-2
+                        focus:-outline-offset-2 focus:outline-amber-600
+                        sm:text-sm/6"
+                    />
 
-        <div>
+                </div>
 
-            <label
-                for="password"
-                class="block text-sm/6 font-medium text-gray-900"
-            >
-                Password:
-            </label>
-
-
-            <div class="mt-2">
-
-                <input
-                    type="password"
-                    name="password"
-                    id="password"
-                    class="block w-full rounded-md bg-white px-3
-                    py-1.5 text-base text-gray-900 outline-1
-                    -outline-offset-1 outline-gray-300
-                    placeholder:text-gray-400 focus:outline-2
-                    focus:-outline-offset-2 focus:outline-amber-600
-                    sm:text-sm/6"
-                />
+                {inputErrors.password && (
+                    <ErrorMessage>
+                        {inputErrors.password}
+                    </ErrorMessage>
+                )}
 
             </div>
 
 
-            {inputErrors.password && (
-                <ErrorMessage>
-                    {inputErrors.password}
-                </ErrorMessage>
-            )}
+            <div>
 
-        </div>
+                <button
+                    type="submit"
+                    class="flex w-full justify-center rounded-md bg-black
+                    px-3 p-2 font-bold text-lg text-white shadow-xs
+                    focus-visible:outline-2 focus-visible:outline-offset-2
+                    focus-visible:outline-amber-600 cursor-pointer"
+                >
+                    Iniciar Sesión
+                </button>
+
+            </div>
+
+        </form>
 
 
+        <!-- Notificación exclusiva de login -->
+        <LoginBlockedNotification
+            show={isBlocked}
+            client:only="react"
+        />
 
-        <div>
 
-            <button
-                type="submit"
-                class="flex w-full justify-center rounded-md bg-black
-                px-3 p-2 font-bold text-lg text-white shadow-xs
-                focus-visible:outline-2 focus-visible:outline-offset-2
-                focus-visible:outline-amber-600 cursor-pointer"
-            >
-                Iniciar Sesión
-            </button>
+        <!-- Volver -->
+        <a
+            href="/"
+            class="text-center text-sm font-semibold text-slate-600 transition-colors hover:text-amber-500"
+        >
+            ← Volver
+        </a>
 
-        </div>
-
-    </form>
-
-     <!-- =====================================
-         NOTIFICACIÓN EXCLUSIVA DE LOGIN
-         ===================================== -->
-
-    <LoginBlockedNotification
-        show={isBlocked}
-        client:only="react"
-    />
+    </div>
 
 </AuthLayout>
-
-
-
