@@ -66,26 +66,26 @@ class Connection{
 
 	static public function connect(){
 
+    try{
 
-		try{
+        $link = new PDO(
+            "mysql:host=".$_ENV["DB_HOST"].";port=".$_ENV["DB_PORT"].";dbname=".Connection::infoDatabase()["database"].";charset=utf8mb4",
+            Connection::infoDatabase()["user"],
+            Connection::infoDatabase()["pass"]
+        );
 
-			$link = new PDO(
-				"mysql:host=".$_ENV["DB_HOST"].";port=".$_ENV["DB_PORT"].";dbname=".Connection::infoDatabase()["database"],
-				Connection::infoDatabase()["user"],
-				Connection::infoDatabase()["pass"]
-			);
+        $link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $link->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
 
-			$link->exec("set names utf8");
+    }catch(PDOException $e){
 
-		}catch(PDOException $e){
+        die("Error: ".$e->getMessage());
 
-			die("Error: ".$e->getMessage());
+    }
 
-		}
+    return $link;
 
-		return $link;
-
-	}
+}
 
 	/*=============================================
 	Validar existencia de una tabla en la bd

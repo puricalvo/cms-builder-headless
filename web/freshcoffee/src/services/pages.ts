@@ -48,6 +48,25 @@ function decodeItem(item: any) {
             result.content = value;
         }
 
+        // Descripción de productos
+        if (key.startsWith("description_")) {
+            result.description = value;
+        }
+
+        // Ingredientes
+        if (key.startsWith("ingredients_")) {
+            result.ingredients = typeof value === "string"
+                ? value.split(",").map(item => item.trim()).filter(Boolean)
+                : value;
+        }
+
+        // Alérgenos
+        if (key.startsWith("allergens_")) {
+            result.allergens = typeof value === "string"
+                ? value.split(",").map(item => item.trim()).filter(Boolean)
+                : value;
+        }
+
         // Relación página
         if (key.startsWith("id_page_")) {
             result.page_id = value;
@@ -57,8 +76,6 @@ function decodeItem(item: any) {
         if (key.startsWith("suffix_")) {
             result.suffix = value;
         }
-
-        
 
     }
 
@@ -109,9 +126,9 @@ export async function getModuleByPage(idPage: number) {
     ) ?? null;
 
 }
+
 export async function getTable(table: string) {
 
-    
     const json = await api(table);
 
     if (json.status !== 200) {
@@ -126,8 +143,6 @@ export async function getCategories() {
 
     const categories = await getTable("listas");
     const pages = await getPages();
-
-    
 
     const parent = pages.find(
         (page: any) => page.url_page === "productos_freshcoffee"
@@ -163,7 +178,7 @@ export async function getCategories() {
                 url_page: page.url_page,
                 suffix: module?.suffix,
                 table: module?.title
-            }
+            };
 
         })
 

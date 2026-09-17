@@ -27,14 +27,14 @@ class InstallController{
 		try{
 
 			$link = new PDO(
-				"mysql:host=".$_ENV["DB_HOST"].";port=".$_ENV["DB_PORT"].";dbname=".InstallController::infoDatabase()["database"],
+				"mysql:host=".$_ENV["DB_HOST"].";port=".$_ENV["DB_PORT"].";dbname=".InstallController::infoDatabase()["database"].";charset=utf8mb4",
 				InstallController::infoDatabase()["user"],
 				InstallController::infoDatabase()["pass"]
 			);
 			$link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$link->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
 
-			$link->exec("set names utf8");
+			
 
 		}catch(PDOException $e){
 
