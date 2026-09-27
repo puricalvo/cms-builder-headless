@@ -128,4 +128,12 @@ export interface CMSProduct {
     category_url?: string;
     price?: string | number;
     table?: string;
+    variable_price?: boolean;
+    variants?: {
+        size: string;
+        price: number;
+    }[];
+    description?: string;
+    ingredients?: string[];
+    allergens?: string[];
 }

@@ -3,12 +3,12 @@ import { formatAmount } from "@/helpers";
 
 interface Props {
     title: string;
-    description: string;
+    subtitle: string;
     price: number;
     image: string;
 }
 
-const { title, description, price, image } = Astro.props;
+const { title, subtitle, price, image } = Astro.props;
 
 const width = 1200;
 const height = 800;
@@ -42,8 +42,8 @@ const height = 800;
                 {title}
             </p>
 
-            <p class="text-coffee-400 text-lg text-center md:text-left">
-                {description}
+            <p class="text-white/80 text-lg text-center md:text-left">
+                {subtitle}
             </p>
         </div>
 

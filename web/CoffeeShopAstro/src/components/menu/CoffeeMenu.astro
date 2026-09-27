@@ -20,7 +20,7 @@ const cafes = await getTable("cafes");
 
                 <MenuItem
                     title={decode(item.title_cafe)}
-                    description={decode(item.description_cafe)}
+                    subtitle={decode(item.subtitle_cafe)}
                     price={Number(decode(item.price_cafe))}
                     image={decode(item.image_cafe)}
                 />

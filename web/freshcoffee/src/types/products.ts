@@ -19,4 +19,10 @@ export interface CMSProduct {
         size: string;
         price: number;
     }[];
-} 
+
+    description?: string;
+
+    ingredients?: string[];
+
+    allergens?: string[];
+}

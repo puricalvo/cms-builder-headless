@@ -1,0 +1,104 @@
+---
+import { getCategories } from "@/services/pages";
+
+const categories = await getCategories();
+---
+
+<div class="md:hidden">
+
+    <!-- Botón hamburguesa -->
+    <button
+        id="categories-mobile-button"
+        type="button"
+        class="w-full flex items-center justify-between bg-slate-600 text-[#F3EDE0] px-4 py-3 font-bold"
+        aria-expanded="false"
+        aria-controls="categories-mobile-menu"
+    >
+        <span>Categorías</span>
+
+        <span
+            id="categories-mobile-icon"
+            class="text-2xl leading-none"
+        >
+            ☰
+        </span>
+    </button>
+
+
+    <!-- Menú de categorías -->
+    <div
+        id="categories-mobile-menu"
+        class="hidden bg-white border-t border-gray-200"
+    >
+
+        {
+            categories.map((category: any) => (
+                <a
+                    href={`/order/${category.url_page}`}
+                    class="flex items-center gap-3 px-4 py-3 border-b border-gray-200 text-gray-800 hover:bg-gray-100"
+                >
+
+                    <img
+                        src={category.icon_lista}
+                        alt={`Imagen de Categoría ${category.title_lista}`}
+                        width="300"
+                        height="300"
+                        class="w-12 h-12 object-cover"
+                    />
+
+                    <span class="text-lg font-bold">
+                        {category.title_lista}
+                    </span>
+
+                </a>
+            ))
+        }
+
+    </div>
+
+</div>
+
+
+<script>
+    document.addEventListener("click", (event) => {
+
+        const target = event.target;
+
+        if (!(target instanceof Element)) return;
+
+        const button = target.closest(
+            "#categories-mobile-button"
+        );
+
+        if (!(button instanceof HTMLButtonElement)) return;
+
+        const menu = document.querySelector(
+            "#categories-mobile-menu"
+        );
+
+        const icon = document.querySelector(
+            "#categories-mobile-icon"
+        );
+
+        if (
+            !(menu instanceof HTMLElement) ||
+            !(icon instanceof HTMLElement)
+        ) return;
+
+        const isOpen =
+            button.getAttribute("aria-expanded") === "true";
+
+        button.setAttribute(
+            "aria-expanded",
+            String(!isOpen)
+        );
+
+        menu.classList.toggle(
+            "hidden",
+            isOpen
+        );
+
+        icon.textContent =
+            isOpen ? "☰" : "✕";
+    });
+</script>

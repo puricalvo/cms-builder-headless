@@ -1,7 +1,12 @@
 import { nullToEmptyString } from "@/utils";
 import { z } from "astro:schema";
 
+/*=============================================
+  Campos comunes
+=============================================*/
+
 const CommonFields = {
+
     title: z.preprocess(
         nullToEmptyString,
         z.string().trim().min(1, {
@@ -21,10 +26,41 @@ const CommonFields = {
         z.string().trim().min(1, {
             message: "Categoría no válida"
         })
+    ),
+
+    description: z.preprocess(
+        nullToEmptyString,
+        z.string().trim()
+    ),
+
+    ingredients: z.preprocess(
+        (value) => Array.isArray(value)
+            ? value
+            : String(nullToEmptyString(value))
+                .split(",")
+                .map((item) => item.trim())
+                .filter(Boolean),
+        z.array(z.string())
+    ),
+
+    allergens: z.preprocess(
+        (value) => Array.isArray(value)
+            ? value
+            : String(nullToEmptyString(value))
+                .split(",")
+                .map((item) => item.trim())
+                .filter(Boolean),
+        z.array(z.string())
     )
 };
 
+
+/*=============================================
+  Precio fijo
+=============================================*/
+
 const FixedPriceSchema = z.object({
+
     variable_price: z.literal("false"),
 
     price: z.coerce.number().min(1, {
@@ -34,7 +70,13 @@ const FixedPriceSchema = z.object({
     ...CommonFields
 });
 
+
+/*=============================================
+  Precio variable
+=============================================*/
+
 const VariablePriceSchema = z.object({
+
     variable_price: z.literal("true"),
 
     variants: z.string().transform((value, ctx) => {
@@ -44,6 +86,7 @@ const VariablePriceSchema = z.object({
             const variants = JSON.parse(value);
 
             if (!Array.isArray(variants) || variants.length === 0) {
+
                 ctx.addIssue({
                     code: "custom",
                     message: "Debes seleccionar al menos un precio"
@@ -72,6 +115,11 @@ const VariablePriceSchema = z.object({
     ...CommonFields
 });
 
+
+/*=============================================
+  Crear producto
+=============================================*/
+
 export const AddProductActionSchema = z.discriminatedUnion(
     "variable_price",
     [
@@ -80,17 +128,28 @@ export const AddProductActionSchema = z.discriminatedUnion(
     ]
 );
 
+
+/*=============================================
+  Editar producto
+=============================================*/
+
 const EditFixedPriceSchema = FixedPriceSchema.extend({
+
     id: z.number().min(1, {
         message: "ID no válido"
     })
+
 });
 
+
 const EditVariablePriceSchema = VariablePriceSchema.extend({
+
     id: z.number().min(1, {
         message: "ID no válido"
     })
+
 });
+
 
 export const EditProductActionSchema = z.discriminatedUnion(
     "variable_price",
@@ -99,3 +158,4 @@ export const EditProductActionSchema = z.discriminatedUnion(
         EditVariablePriceSchema
     ]
 );
+

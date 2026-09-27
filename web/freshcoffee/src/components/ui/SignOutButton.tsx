@@ -62,6 +62,18 @@ export default function SignOutButton() {
             isOrderDrawerOpen: false
         });
 
+         /*
+         * =============================================
+         * ELIMINAR CONTADOR DE INVITADO
+         * =============================================
+         *
+         * Al salir, eliminamos también la marca
+         * del contador para que una nueva entrada
+         * como invitado empiece desde 2 minutos.
+         */
+
+        localStorage.removeItem("freshcoffee-guest-started");
+
         /*
          * =============================================
          * CERRAR SESIÓN
