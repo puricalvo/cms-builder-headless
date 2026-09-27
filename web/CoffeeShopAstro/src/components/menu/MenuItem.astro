@@ -1,17 +1,35 @@
 ---
 import { formatAmount } from "@/helpers";
+import ProductInfoModal from "./ProductInfoModal.astro";
 
 interface Props {
+    table: string;
+    id: string | number;
     title: string;
     subtitle: string;
     price: number;
     image: string;
+    ingredients: string[];
+    allergens: string[];
 }
 
-const { title, subtitle, price, image } = Astro.props;
+const {
+    table,
+    id,
+    title,
+    subtitle,
+    price,
+    image,
+    ingredients,
+    allergens
+} = Astro.props;
+
+const dialogId = `product-dialog-${table}-${id}`;
 
 const width = 1200;
 const height = 800;
+
+
 ---
 
 <li class="flex flex-col md:flex-row lg:justify-between gap-5 w-full md:items-center p-5">
@@ -25,26 +43,31 @@ const height = 800;
                 data-pswp-width={width}
                 data-pswp-height={height}
             >
-
                 <img
                     src={image}
                     alt={`Imagen del menú: ${title}`}
                     loading="lazy"
                     class="w-full h-64 md:h-40 object-cover border-8 border-white"
                 />
-
             </a>
 
         </div>
 
         <div class="flex-1">
+
             <p class="text-white font-bold text-2xl text-center md:text-left">
                 {title}
             </p>
 
-            <p class="text-white/80 text-lg text-center md:text-left">
+            <button
+                type="button"
+                data-open-product-dialog={dialogId}
+                class="menu-subtitle text-white/80 text-lg text-center md:text-left w-full p-0 bg-transparent border-0 cursor-pointer"
+                aria-label={`Ver información de ${title}`}
+            >
                 {subtitle}
-            </p>
+            </button>
+
         </div>
 
     </div>
@@ -54,3 +77,49 @@ const height = 800;
     </p>
 
 </li>
+
+<ProductInfoModal
+    product={{
+        table,
+        id,
+        title,
+        subtitle,
+        image,
+        ingredients,
+        allergens
+    }}
+/>
+
+<slot />
+
+<script>
+    document.addEventListener("click", (event) => {
+
+        const target = event.target as HTMLElement;
+
+        const button = target.closest<HTMLElement>(
+            "[data-open-product-dialog]"
+        );
+
+        if (!button) return;
+
+        const dialogId = button.dataset.openProductDialog;
+
+        if (!dialogId) return;
+
+        const dialog = document.getElementById(
+            dialogId
+        ) as HTMLDialogElement | null;
+
+        dialog?.showModal();
+    });
+</script>
+
+<style>
+    .menu-subtitle {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>

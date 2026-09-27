@@ -5,6 +5,10 @@ import { getTable } from "@/services/pages";
 import { decode } from "@/services/utils";
 
 const cafes = await getTable("cafes");
+
+console.log("CAFE PRUEBA:", cafes[0]);
+console.log("INGREDIENTES:", cafes[0]?.ingredients_cafe);
+console.log("ALERGENOS:", cafes[0]?.allergens_cafe);
 ---
 
 <div>
@@ -22,7 +26,18 @@ const cafes = await getTable("cafes");
                     title={decode(item.title_cafe)}
                     subtitle={decode(item.subtitle_cafe)}
                     price={Number(decode(item.price_cafe))}
-                    image={decode(item.image_cafe)}
+                    image={decode(item.image_cafe)} 
+                    table="cafes"
+                    id={item.id_cafe}
+                    ingredients={String(item.ingredients_cafe ?? "")
+                        .split(",")
+                        .map((item: string) => item.trim())
+                        .filter(Boolean)}
+                        
+                    allergens={String(item.allergens_cafe ?? "")
+                        .split(",")
+                        .map((item: string) => item.trim())
+                        .filter(Boolean)}
                 />
 
             ))

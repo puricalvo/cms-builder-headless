@@ -23,6 +23,17 @@ const comidas = await getTable("comidas");
                     subtitle={decode(item.subtitle_comida)}
                     price={Number(decode(item.price_comida))}
                     image={decode(item.image_comida)}
+                    table="comidas"
+                    id={item.id_comida}
+                    ingredients={String(item.ingredients_comida ?? "")
+                        .split(",")
+                        .map((item: string) => item.trim())
+                        .filter(Boolean)}
+                        
+                    allergens={String(item.allergens_comida ?? "")
+                        .split(",")
+                        .map((item: string) => item.trim())
+                        .filter(Boolean)}
                 />
 
             ))
@@ -31,6 +42,7 @@ const comidas = await getTable("comidas");
     </ul>
 
 </div>
+   
 
 <script>
     import { initLightbox } from "@/scripts/initLightbox";
