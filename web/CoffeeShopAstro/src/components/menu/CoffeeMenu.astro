@@ -5,8 +5,6 @@ import { getTable } from "@/services/pages";
 import { decode } from "@/services/utils";
 
 const cafes = await getTable("cafes");
-
-
 ---
 
 <div>
@@ -15,7 +13,10 @@ const cafes = await getTable("cafes");
         Café
     </h4>
 
-    <ul id="coffee-menu" class="space-y-3">
+    <ul
+        id="coffee-menu"
+        class="menu-gallery space-y-3"
+    >
 
         {
             cafes.map((item: any) => (
@@ -24,14 +25,13 @@ const cafes = await getTable("cafes");
                     title={decode(item.title_cafe)}
                     subtitle={decode(item.subtitle_cafe)}
                     price={Number(decode(item.price_cafe))}
-                    image={decode(item.image_cafe)} 
+                    image={decode(item.image_cafe)}
                     table="cafes"
                     id={item.id_cafe}
                     ingredients={String(item.ingredients_cafe ?? "")
                         .split(",")
                         .map((item: string) => item.trim())
                         .filter(Boolean)}
-                        
                     allergens={String(item.allergens_cafe ?? "")
                         .split(",")
                         .map((item: string) => item.trim())
@@ -48,9 +48,9 @@ const cafes = await getTable("cafes");
 <script>
     import { initLightbox } from "@/scripts/initLightbox";
 
-    initLightbox("#coffee-menu");
+    initLightbox("#coffee-menu", "a.menu-lightbox-item");
 
     document.addEventListener("astro:page-load", () => {
-        initLightbox("#coffee-menu");
+        initLightbox("#coffee-menu", "a.menu-lightbox-item");
     });
 </script>

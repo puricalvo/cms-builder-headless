@@ -42,14 +42,15 @@ const comidas = await getTable("comidas");
     </ul>
 
 </div>
-   
 
 <script>
     import { initLightbox } from "@/scripts/initLightbox";
 
-    initLightbox("#food-menu");
+    initLightbox("#food-menu", "a.menu-lightbox-item");
 
     document.addEventListener("astro:page-load", () => {
-        initLightbox("#food-menu");
+        initLightbox("#food-menu", "a.menu-lightbox-item");
     });
 </script>
+   
+

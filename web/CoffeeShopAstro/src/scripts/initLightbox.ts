@@ -3,8 +3,10 @@ import "photoswipe/style.css";
 
 const instances = new Map<string, PhotoSwipeLightbox>();
 
-export function initLightbox(selector: string) {
-
+export function initLightbox(
+    selector: string,
+    children: string = "a"
+) {
     const current = instances.get(selector);
 
     if (current) {
@@ -13,7 +15,7 @@ export function initLightbox(selector: string) {
 
     const lightbox = new PhotoSwipeLightbox({
         gallery: selector,
-        children: "a",
+        children,
         pswpModule: () => import("photoswipe"),
     });
 

@@ -42,10 +42,8 @@ export async function api(
 
     const errorText = await response.text();
 
-    console.log("================================");
-    console.log("API ERROR STATUS:", response.status);
+    
     console.log("API ERROR RESPONSE:", errorText);
-    console.log("================================");
 
     throw new Error(
       `Error ${response.status}: ${response.statusText}`
