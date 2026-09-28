@@ -1,3 +1,4 @@
+
 # CMS Builder Headless
 
 **CMS Builder Headless** es una arquitectura desacoplada que demuestra
@@ -13,8 +14,6 @@ La idea es que CMS Builder proporcione la estructura, los datos,
 usuarios, permisos, tablas y configuración, mientras que distintas
 aplicaciones frontend consumen y modifican esa información mediante la
 API.
-
-------------------------------------------------------------------------
 
 ## 🧩 CMS Builder como gestor de aplicaciones
 
@@ -39,11 +38,10 @@ modifiquen y eliminen información de las tablas creadas desde el CMS.
 Esto permite utilizar CMS Builder como **backend reutilizable para
 diferentes aplicaciones**.
 
-------------------------------------------------------------------------
-
 ## 📐 Arquitectura
 
-``` text
+---
+```
                          CMS Builder
                    Gestión y configuración
                               │
@@ -59,12 +57,12 @@ diferentes aplicaciones**.
                               ▼
                          Base de datos
 ```
-
-------------------------------------------------------------------------
+---
 
 ## 📁 Estructura
 
-``` text
+---
+```
 cms-builder-headless/
 │
 ├── api/
@@ -77,8 +75,7 @@ cms-builder-headless/
     └── freshcoffee/
         └── Aplicación de pedidos y gestión
 ```
-
-------------------------------------------------------------------------
+---
 
 # 🧩 CMS Builder
 
@@ -99,17 +96,17 @@ CMS Builder permite gestionar:
 
 Las tablas utilizan `suffix` para generar estructuras dinámicas como:
 
-``` text
+---
+```
 id_reparto
 localidad_reparto
 activa_reparto
 date_created_reparto
 date_updated_reparto
 ```
+---
 
 Los campos de identificación y fechas se generan automáticamente.
-
-------------------------------------------------------------------------
 
 # 🌐 API REST
 
@@ -126,7 +123,8 @@ Esto permite que una aplicación externa pueda crear y modificar
 información sin tener que desarrollar un endpoint específico para cada
 tabla.
 
-``` text
+---
+```
 Aplicación
     ↓
 API REST
@@ -135,8 +133,7 @@ CMS Builder
     ↓
 Base de datos
 ```
-
-------------------------------------------------------------------------
+---
 
 # 👥 Usuarios, administradores y editores
 
@@ -148,8 +145,6 @@ páginas o funcionalidades.
 
 Una misma cuenta puede utilizar CMS Builder y, si tiene los permisos
 correspondientes, acceder también a una aplicación conectada al CMS.
-
-------------------------------------------------------------------------
 
 # ☕ CoffeeShopAstro
 
@@ -176,13 +171,12 @@ Incluye:
 -   Reservas.
 -   Acceso al sistema de pedidos.
 
-------------------------------------------------------------------------
-
 # 🔗 CoffeeShopAstro → FreshCoffee
 
 La web pública incorpora un botón para acceder al sistema de pedidos.
 
-``` text
+---
+```
 CoffeeShopAstro
        ↓
 Realizar pedido
@@ -195,8 +189,7 @@ Carrito
        ↓
 Pedido
 ```
-
-------------------------------------------------------------------------
+---
 
 # 🛒 FreshCoffee
 
@@ -218,8 +211,6 @@ Tecnologías:
 
 La aplicación consume los datos de CMS Builder mediante la API REST.
 
-------------------------------------------------------------------------
-
 # 🥐 Productos
 
 FreshCoffee trabaja con:
@@ -236,8 +227,6 @@ FreshCoffee trabaja con:
 Los productos pueden gestionarse desde FreshCoffee y almacenarse en las
 tablas gestionadas por CMS Builder.
 
-------------------------------------------------------------------------
-
 # 🛍️ Carrito
 
 Permite:
@@ -253,21 +242,19 @@ Permite:
 
 Utiliza Zustand y almacenamiento local.
 
-------------------------------------------------------------------------
-
 # 🔐 Autenticación
 
 FreshCoffee utiliza el token:
 
-``` text
+---
+```
 FRESHCOFFEE_TOKEN
 ```
+---
 
 El token identifica la sesión y se valida mediante la API.
 
 Cada administrador tiene su propio registro, identificador y token.
-
-------------------------------------------------------------------------
 
 # 👤 Sesión de invitado
 
@@ -275,16 +262,16 @@ FreshCoffee permite acceder como invitado.
 
 El control temporal utiliza:
 
-``` text
+---
+```
 freshcoffee-guest-started
 ```
+---
 
 Cuando finaliza el tiempo establecido, el carrito puede vaciarse
 automáticamente.
 
 El invitado no puede completar un pedido normal sin una sesión válida.
-
-------------------------------------------------------------------------
 
 # 📦 Pedidos
 
@@ -304,8 +291,6 @@ Los pedidos almacenan:
 -   Estado del pedido.
 
 La aplicación no accede directamente a la base de datos.
-
-------------------------------------------------------------------------
 
 # 🧪 Pedidos de prueba
 
@@ -329,15 +314,15 @@ Permite comprobar:
 Los pedidos de prueba identifican técnicamente al administrador
 mediante:
 
-``` text
+---
+```
 id_admin_test_order
 email_admin_test_order
 ```
+---
 
 También pueden conservar un nombre descriptivo introducido por el
 administrador.
-
-------------------------------------------------------------------------
 
 # 🖥️ Panel administrativo
 
@@ -360,14 +345,13 @@ Permite gestionar:
 La gestión general de contenidos, páginas, tablas, usuarios y permisos
 pertenece a CMS Builder.
 
-------------------------------------------------------------------------
-
 # 💳 Redsys
 
 FreshCoffee incorpora integración con **Redsys** para pagos mediante
 tarjeta.
 
-``` text
+---
+```
 Carrito
    ↓
 Datos del cliente
@@ -386,8 +370,7 @@ Crear pedido
    ↓
 CMS Builder
 ```
-
-------------------------------------------------------------------------
+---
 
 # 📍 Zonas de reparto
 
@@ -396,7 +379,8 @@ consulta mediante la API.
 
 Ejemplo:
 
-``` text
+---
+```
 id_reparto
 localidad_reparto
 cafeteria_reparto
@@ -404,8 +388,7 @@ activa_reparto
 date_created_reparto
 date_updated_reparto
 ```
-
-------------------------------------------------------------------------
+---
 
 # 🧾 Separación de responsabilidades
 
@@ -446,14 +429,13 @@ Gestiona:
 -   Operativa de la cafetería.
 -   Panel administrativo.
 
-------------------------------------------------------------------------
-
 # 📦 Arquitectura comercial
 
 El proyecto demuestra que CMS Builder puede utilizarse como base para
 construir diferentes soluciones.
 
-``` text
+---
+```
 ┌───────────────────────────┐
 │        CMS Builder        │
 │ Backend + Gestión         │
@@ -465,10 +447,12 @@ construir diferentes soluciones.
 │     personalizada         │
 └───────────────────────────┘
 ```
+---
 
 En este proyecto:
 
-``` text
+---
+```
 CMS Builder
      │
      ├── API REST
@@ -479,10 +463,9 @@ CMS Builder
      └── FreshCoffee
             └── App de pedidos
 ```
+---
 
 La arquitectura puede reutilizarse para otros negocios y aplicaciones.
-
-------------------------------------------------------------------------
 
 # 🚀 Escalabilidad
 
@@ -498,8 +481,6 @@ El sistema puede ampliarse mediante:
 -   Nuevos editores.
 -   Nuevos permisos.
 -   Nuevas aplicaciones frontend.
-
-------------------------------------------------------------------------
 
 # 🔒 Seguridad
 
@@ -520,35 +501,37 @@ El sistema utiliza:
 
 No se deben incluir credenciales reales en el repositorio público.
 
-------------------------------------------------------------------------
-
 # 💻 Instalación
 
 ## API
 
-``` bash
+---
+```
 composer install
 ```
+---
 
 Configurar las variables de entorno, la base de datos y Apache.
 
 ## CoffeeShopAstro
 
-``` bash
+---
+```
 cd web/coffeeastro
 npm install
 npm run dev
 ```
+---
 
 ## FreshCoffee
 
-``` bash
+---
+```
 cd web/freshcoffee
 npm install
 npm run dev
 ```
-
-------------------------------------------------------------------------
+---
 
 # 🧰 CMS Builder Installer
 
@@ -562,19 +545,18 @@ proyecto.
 
 ### CMS Builder
 
-https://github.com/puricalvo/cms-builder
+https://github.com/puricalvo/cms-install-builder
 
 ### CMS Builder Headless
 
 https://github.com/puricalvo/cms-builder-headless
 
-------------------------------------------------------------------------
-
 # 🎯 Objetivo
 
 El objetivo es disponer de una plataforma reutilizable formada por:
 
-``` text
+---
+```
 CMS Builder
      +
 API REST
@@ -587,14 +569,13 @@ Panel administrativo
      +
 Pagos
 ```
+---
 
 CMS Builder deja de ser únicamente un sistema para crear páginas web y
 se convierte también en una **plataforma para crear y gestionar
 aplicaciones conectadas a su API**.
 
 La aplicación de cafetería es un ejemplo práctico de esta arquitectura.
-
-------------------------------------------------------------------------
 
 # 👩‍💻 Autora
 
