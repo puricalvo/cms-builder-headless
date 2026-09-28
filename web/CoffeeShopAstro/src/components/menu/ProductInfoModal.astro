@@ -206,6 +206,7 @@ const dialogId = `product-dialog-${product.table ?? "product"}-${product.id}`;
         <dialog
             id={dialogId}
             class="product-dialog"
+            data-product-dialog
             aria-labelledby={`${dialogId}-title`}
         >
             <div class="product-dialog-content">
@@ -318,7 +319,7 @@ const dialogId = `product-dialog-${product.table ?? "product"}-${product.id}`;
                             ></p>
 
                             <a
-                                href="/legal/alergenos"
+                                href="/legal/alergenos?from=menu"
                                 class="mt-2 inline-block text-xs font-semibold text-amber-600 hover:text-amber-700 transition-colors"
                             >
                                 Consulta la información sobre alérgenos
@@ -339,6 +340,44 @@ const dialogId = `product-dialog-${product.table ?? "product"}-${product.id}`;
 }
 
 <script>
+
+    document.querySelectorAll<HTMLDialogElement>(
+        "[data-product-dialog]"
+    ).forEach((dialog) => {
+        dialog.addEventListener("click", (event) => {
+            const target = event.target as HTMLElement;
+
+            const closeButton = target.closest<HTMLElement>(
+                "[data-close-product-dialog]"
+            );
+
+            if (closeButton) {
+                dialog.close();
+                event.stopPropagation();
+                return;
+            }
+
+            if (target === dialog) {
+                const rect = dialog.getBoundingClientRect();
+
+                if (
+                    event.clientX < rect.left ||
+                    event.clientX > rect.right ||
+                    event.clientY < rect.top ||
+                    event.clientY > rect.bottom
+                ) {
+                    dialog.close();
+                }
+
+                return;
+            }
+
+            // Cualquier clic dentro del contenido del modal
+            // no debe llegar al sistema de PhotoSwipe.
+            event.stopPropagation();
+        });
+    });
+
     document.addEventListener("click", (event) => {
 
         const target = event.target as HTMLElement;

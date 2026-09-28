@@ -1,0 +1,53 @@
+---
+import "@/styles/global.css";
+import Footer from "@/components/ui/Footer.astro";
+import Logo from '@/assets/logo.svg';
+
+interface Props {
+    title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cafeteria desde 1939: {title}</title>
+
+    <link rel="icon" type="image/svg+xml" href="/logocafe.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=PT+Sans:wght@400;700&display=swap"
+        rel="stylesheet"
+    >
+</head>
+
+<body class="bg-coffee-50">
+
+    <main class="min-h-screen bg-white">
+
+        <div class="mx-auto max-w-4xl px-5 py-10 sm:px-8 sm:py-14">
+
+            <div class="mb-8 flex justify-center">
+                <div class="rounded-lg bg-coffee-900 px-8 py-4">
+                    <Logo class="w-36 sm:w-44" />
+                </div>
+            </div>
+
+            <slot />
+
+        </div>
+
+    </main>
+
+    <Footer />
+
+</body>
+</html>
