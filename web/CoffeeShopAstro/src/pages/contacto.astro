@@ -30,6 +30,24 @@ const location = locations[0];
         set:html={decode(contacto?.description_contacto ?? "")}
     ></div>
 
+    <!-- Aviso de demostración -->
+    <div class="mt-8 rounded-xl border border-amber-200 bg-amber-50 px-4 py-4">
+
+        <p class="text-sm font-black text-slate-700">
+            ⚠️ Proyecto de demostración
+        </p>
+
+        <p class="mt-1 text-sm leading-6 text-slate-600">
+            En Cafetería desde 1939 es una web de demostración para portfolio.
+            No es un servicio real y los pedidos no serán procesados.
+        </p>
+
+        <p class="mt-1 text-xs font-semibold leading-5 text-slate-500">
+            No introduzcas datos personales ni contraseñas reales.
+        </p>
+
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
         <ContactForm />
 
