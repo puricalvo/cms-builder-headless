@@ -86,7 +86,7 @@ export async function getPickupOrders(
 ) {
 
     return await api(
-        `orders?linkTo=status_order&equalTo=completed&orderBy=id_order&orderMode=DESC&per_page=${perPage}`,
+        `orders?linkTo=status_order&equalTo=completed&orderBy=date_updated_order&orderMode=DESC&per_page=${perPage}`,
         "GET"
     );
 }
