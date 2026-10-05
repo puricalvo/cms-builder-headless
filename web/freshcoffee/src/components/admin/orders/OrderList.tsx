@@ -14,6 +14,8 @@ export default function OrderList({ status }: Props) {
     const res = await fetch(url);
     const json = await res.json();
 
+ 
+
     if (Array.isArray(json)) {
       return json;
     }

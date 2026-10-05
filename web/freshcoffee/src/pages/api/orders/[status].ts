@@ -76,7 +76,6 @@ export const GET: APIRoute = async ({ params, cookies }) => {
     const json = await res.json();
 
 
-
     return new Response(
         JSON.stringify(json.results ?? []),
         {

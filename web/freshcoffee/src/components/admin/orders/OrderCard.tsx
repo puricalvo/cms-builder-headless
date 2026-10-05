@@ -12,7 +12,17 @@ type Props = {
 
 export default function OrderCard({ order, mutate }: Props) {
 
-    const items = JSON.parse(order.items_order);
+    let items: any[] = [];
+
+    try {
+        items = order.items_order
+            ? JSON.parse(order.items_order)
+            : [];
+    } catch {
+        items = [];
+    }
+
+    
 
     const handleChang = async (
         e: React.ChangeEvent<HTMLSelectElement>

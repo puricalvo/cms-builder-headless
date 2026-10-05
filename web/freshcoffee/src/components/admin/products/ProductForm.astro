@@ -63,6 +63,65 @@ const { product } = Astro.props;
         currentImage={product?.image}
       />
 
+      <div class="col-span-full">
+        <label
+          for="description"
+          class="block text-sm/6 font-medium text-gray-900"
+        >
+          Descripción
+        </label>
+
+        <div class="mt-2">
+          <textarea
+            id="description"
+            name="description"
+            rows="4"
+            placeholder="Descripción del producto"
+            class="w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+          >{product?.description ?? ""}</textarea>
+        </div>
+      </div>
+
+      <div class="col-span-full sm:col-span-3">
+        <label
+          for="ingredients"
+          class="block text-sm/6 font-medium text-gray-900"
+        >
+          Ingredientes
+        </label>
+
+        <div class="mt-2">
+          <input
+            id="ingredients"
+            name="ingredients"
+            type="text"
+            placeholder="Cafe, leche, azúcar"
+            value={Array.isArray(product?.ingredients) ? product.ingredients.join(", ") : ""}
+            class="w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+          />
+        </div>
+      </div>
+
+      <div class="col-span-full sm:col-span-3">
+        <label
+          for="allergens"
+          class="block text-sm/6 font-medium text-gray-900"
+        >
+          Alérgenos
+        </label>
+
+        <div class="mt-2">
+          <input
+            id="allergens"
+            name="allergens"
+            type="text"
+            placeholder="Leche, gluten"
+            value={Array.isArray(product?.allergens) ? product.allergens.join(", ") : ""}
+            class="w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+          />
+        </div>
+      </div>
+
       <CategoryField
         currentCategory={product?.category_url}
       />

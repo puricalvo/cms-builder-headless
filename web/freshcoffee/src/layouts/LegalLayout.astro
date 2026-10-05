@@ -24,4 +24,46 @@ const { title } = Astro.props;
     </main>
 
     <Footer />
+
+     <!-- Botón volver arriba -->
+    <button
+        id="back-to-top"
+        type="button"
+        aria-label="Volver arriba"
+        class="fixed bottom-6 right-6 z-50 hidden h-12 w-12 items-center justify-center rounded-full bg-slate-700 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-slate-600"
+    >
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            class="h-6 w-6"
+        >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+        </svg>
+    </button>
+
+    <script>
+        const backToTop = document.getElementById("back-to-top");
+
+        if (backToTop) {
+            window.addEventListener("scroll", () => {
+                if (window.scrollY > 150) {
+                    backToTop.classList.remove("hidden");
+                    backToTop.classList.add("flex");
+                } else {
+                    backToTop.classList.add("hidden");
+                    backToTop.classList.remove("flex");
+                }
+            });
+
+            backToTop.addEventListener("click", () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            });
+        }
+    </script>
 </Layout>

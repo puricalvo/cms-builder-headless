@@ -1,6 +1,7 @@
 ---
 	import ToastNotification from '@/components/ui/ToastNotification'
 	import CookieConsent from '@/components/ui/CookieConsent'
+    import BackToTop from '@/components/ui/BackToTop.astro'
 	import "react-toastify/dist/ReactToastify.css"
 	import '@/styles/global.css'
 	
@@ -23,7 +24,7 @@
 
 		<ToastNotification client:only="react" />
 		<CookieConsent client:only="react" />
+
+		<BackToTop />
 	</body>
 </html>
-
-

@@ -25,7 +25,7 @@ const description = product.description?.trim() ?? "";
 const dialogId = `product-dialog-${product.table ?? "product"}-${product.id}`;
 ---
 
-<div class="product-card border border-gray-200 bg-white overflow-hidden mx-auto w-full max-w-[320px] sm:max-w-none sm:mx-0">
+<div class="product-card border border-gray-200 bg-white overflow-hidden mx-auto w-full max-w-[320px] sm:max-w-none sm:mx-0 flex flex-col">
 
     <div class="mt-2 w-full h-40 sm:h-auto sm:aspect-3/4 overflow-visible md:mt-0 flex items-center justify-center bg-transparent">
         <img
@@ -36,55 +36,63 @@ const dialogId = `product-dialog-${product.table ?? "product"}-${product.id}`;
         />
     </div>
 
-    <div class="p-3 sm:p-4">
+    <div class="p-3 sm:p-4 flex flex-col flex-1">
 
-        <h3 class="text-lg sm:text-xl font-black line-clamp-2 mb-1">
-            {product.title}
-        </h3>
+        <div class="grow">
 
-        {
-            description && (
-                <button
-                    type="button"
-                    class="product-description"
-                    data-open-product-dialog={dialogId}
-                    aria-label={`Ver información de ${product.title}`}
-                >
-                    {description}
-                </button>
-            )
-        }
+            <h3 class="text-lg sm:text-xl font-black line-clamp-2 mb-1">
+                {product.title}
+            </h3>
 
-        {
-            isVariable ? (
+            {
+                description && (
+                    <button
+                        type="button"
+                        class="product-description"
+                        data-open-product-dialog={dialogId}
+                        aria-label={`Ver información de ${product.title}`}
+                    >
+                        {description}
+                    </button>
+                )
+            }
 
-                <PriceWithVariants
-                    product={{
-                        ...product,
-                        variants
-                    }}
-                />
+        </div>
 
-            ) : (
+        <div class="mt-auto">
 
-                <>
-                    <p class="mt-2 sm:mt-3 lg:mt-4 font-black text-xl sm:text-2xl text-amber-400">
-                        {formatCurrency(Number(product.price))}
-                    </p>
+            {
+                isVariable ? (
 
-                    <AddProductButton
-                        client:only="react"
+                    <PriceWithVariants
                         product={{
-                            id: product.id,
-                            table: product.table,
-                            name: product.title,
-                            price: Number(product.price)
+                            ...product,
+                            variants
                         }}
                     />
-                </>
 
-            )
-        }
+                ) : (
+
+                    <>
+                        <p class="mt-2 sm:mt-3 lg:mt-4 font-black text-xl sm:text-2xl text-amber-400">
+                            {formatCurrency(Number(product.price))}
+                        </p>
+
+                        <AddProductButton
+                            client:only="react"
+                            product={{
+                                id: product.id,
+                                table: product.table,
+                                name: product.title,
+                                price: Number(product.price)
+                            }}
+                        />
+                    </>
+
+                )
+            }
+
+        </div>
 
     </div>
 
@@ -107,7 +115,7 @@ const dialogId = `product-dialog-${product.table ?? "product"}-${product.id}`;
         text-align: left;
         font-size: 0.875rem;
         line-height: 1.375rem;
-        color: rgb(71 85 105);
+        color: rgb(71, 85, 105);
         cursor: pointer;
         transition: color 180ms ease;
     }
@@ -135,4 +143,3 @@ const dialogId = `product-dialog-${product.table ?? "product"}-${product.id}`;
         }
     }
 </style>
-
